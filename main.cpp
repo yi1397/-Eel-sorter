@@ -8,13 +8,13 @@ void on_trackbar(int, void*)
 
 }
 
-void detect_eel(Mat input, Mat& output, int brightness)
+void detect_eel(Mat& input, Mat& output, int brightness)
 {
 	int sum = 0;
+	Mat cam_img = input.clone();
 	Mat detect;
-	Mat mask;
 	Mat hsv_img;
-	cvtColor(input, hsv_img, COLOR_BGR2HSV);
+	cvtColor(cam_img, hsv_img, COLOR_BGR2HSV);
 	vector<Mat> channels;
 	split(hsv_img, channels);
 	
@@ -35,11 +35,17 @@ void detect_eel(Mat input, Mat& output, int brightness)
 	}
 	detect = channels[2];
 	Canny(detect, detect, 1, 1, 3);
-	//bitwise_xor(input, mask, input);
+	vector<vector<Point>> contours;
+	vector<Vec4i> hierarchy;
+	findContours(detect, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0));
+	for (int i = 0; i < contours.size(); i++)
+	{
+		drawContours(cam_img, contours, i, Scalar(0,0,255), 2, 8, hierarchy, 0, Point());
+	}
 	cvtColor(detect, detect, COLOR_GRAY2BGR);
 	putText(detect, to_string(sum), Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
 
-	hconcat(input, detect, output);
+	hconcat(cam_img, detect, output);
 }
 
 int main()
@@ -67,7 +73,6 @@ int main()
 		{
 			break;
 		}
-		cout << "1" << endl;
 	}
 	return 0;
 }
