@@ -8,10 +8,10 @@ void on_trackbar(int, void*)
 
 }
 
-void detect_eel(Mat& input, Mat& output, int brightness)
+void detect_eel(Mat input, Mat& output, int brightness)
 {
 	int sum = 0;
-	
+	Mat detect;
 	Mat mask;
 	Mat hsv_img;
 	cvtColor(input, hsv_img, COLOR_BGR2HSV);
@@ -33,12 +33,13 @@ void detect_eel(Mat& input, Mat& output, int brightness)
 			data[j] = static_cast<uchar>(fixed_data);
 		}
 	}
-	output = channels[2];
-	
-	cvtColor(output, output, COLOR_GRAY2BGR);
-	putText(output, to_string(sum), Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
+	detect = channels[2];
+	Canny(detect, detect, 1, 1, 3);
+	//bitwise_xor(input, mask, input);
+	cvtColor(detect, detect, COLOR_GRAY2BGR);
+	putText(detect, to_string(sum), Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
 
-	hconcat(input, output, output);
+	hconcat(input, detect, output);
 }
 
 int main()
@@ -66,6 +67,7 @@ int main()
 		{
 			break;
 		}
+		cout << "1" << endl;
 	}
 	return 0;
 }
