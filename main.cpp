@@ -19,7 +19,7 @@ void on_trackbar(int, void*)
 
 }
 
-void detect_eel(Mat& input, Mat& output, int brightness)
+void detect_eel(Mat& input, Mat& output, int brightness, int color, int color_range)
 {
 	int sum = 0;
 	Mat cam_img = input.clone();
@@ -99,6 +99,8 @@ void detect_eel(Mat& input, Mat& output, int brightness)
 int main()
 {
 	int brightness_to_detect;
+	int color_to_detect;
+	int color_range;
 	Mat img;
 	Mat detect_img;
 	Mat view_img;
@@ -122,7 +124,9 @@ int main()
 		begin_t = clock();
 
 		brightness_to_detect = getTrackbarPos(brightness_trackbar_name, "detect");
-		detect_eel(img, detect_img, brightness_to_detect);
+		color_to_detect = getTrackbarPos(color_trackbar_name, "detect");
+		color_range = getTrackbarPos(color_range_trackbar_name, "detect");
+		detect_eel(img, detect_img, brightness_to_detect, color_to_detect, color_range);
 		imshow("detect", detect_img);
 		if (waitKey(1) == 27)
 		{
