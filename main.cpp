@@ -109,11 +109,13 @@ int main()
 		cout << "No img" << endl;
 		return -1;
 	}
-	string brightness_trackbar_name = "Brightness";
-	string color_trackbar_name = "color";
+	string brightness_trackbar_name = "감지할밝기";
+	string color_trackbar_name = "감지할색상";
+	string color_range_trackbar_name = "색상범위";
 	namedWindow("detect", WINDOW_AUTOSIZE);
 	createTrackbar(brightness_trackbar_name, "detect", 0, 255, on_trackbar);
 	createTrackbar(color_trackbar_name, "detect", 0, 180, on_trackbar);
+	createTrackbar(color_range_trackbar_name, "detect", 0, 90, on_trackbar);
 	while (1)
 	{
 		clock_t begin_t, end_t;
