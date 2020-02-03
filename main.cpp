@@ -21,7 +21,7 @@ void on_trackbar(int, void*)
 
 void detect_eel(Mat& input, Mat& output, int brightness, int color, int color_range)
 {
-	int sum = 0;
+	double detect_area = 0;
 	Mat cam_img = input.clone();
 	Mat threshhold_img;
 	Mat detect(input.size(), CV_8UC3);
@@ -40,7 +40,7 @@ void detect_eel(Mat& input, Mat& output, int brightness, int color, int color_ra
 			if (data[j] < brightness)
 			{
 				fixed_data = 255;
-				sum++;
+				//sum++;
 			}
 			data[j] = static_cast<uchar>(fixed_data);
 		}
@@ -54,7 +54,7 @@ void detect_eel(Mat& input, Mat& output, int brightness, int color, int color_ra
 	for (int i = 0; i < contours.size(); i++)
 	{
 		cnt++;
-		if (contours[max_contour].size() < contours[i].size())
+		if (contourArea(contours[max_contour]) < contourArea(contours[i]))
 		{
 			max_contour = i;
 		}
@@ -64,6 +64,7 @@ void detect_eel(Mat& input, Mat& output, int brightness, int color, int color_ra
 	//cout << "max_contour:" << max_contour << endl;
 	if (cnt != 0)
 	{
+		detect_area = contourArea(contours[max_contour]);
 		double min_dist = 10e+10;
 		Point minA;
 		Point minB;
@@ -92,7 +93,7 @@ void detect_eel(Mat& input, Mat& output, int brightness, int color, int color_ra
 	drawContours(threshhold_img, contours, max_contour, Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
 	drawContours(detect, contours, max_contour, Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
 	//cout << cnt << endl;
-	putText(threshhold_img, to_string(sum), Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
+	putText(threshhold_img, to_string(detect_area), Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
 	hconcat(cam_img, threshhold_img, output);
 	hconcat(output, detect, output);
 }
