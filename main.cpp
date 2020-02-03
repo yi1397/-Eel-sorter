@@ -109,15 +109,17 @@ int main()
 		cout << "No img" << endl;
 		return -1;
 	}
-	string Brightness_trackbar_name = "Brightness";
+	string brightness_trackbar_name = "Brightness";
+	string color_trackbar_name = "color";
 	namedWindow("detect", WINDOW_AUTOSIZE);
-	createTrackbar(Brightness_trackbar_name, "detect", 0, 255, on_trackbar);
+	createTrackbar(brightness_trackbar_name, "detect", 0, 255, on_trackbar);
+	createTrackbar(color_trackbar_name, "detect", 0, 180, on_trackbar);
 	while (1)
 	{
 		clock_t begin_t, end_t;
 		begin_t = clock();
 
-		brightness_to_detect = getTrackbarPos(Brightness_trackbar_name, "detect");
+		brightness_to_detect = getTrackbarPos(brightness_trackbar_name, "detect");
 		detect_eel(img, detect_img, brightness_to_detect);
 		imshow("detect", detect_img);
 		if (waitKey(1) == 27)
