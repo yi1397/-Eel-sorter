@@ -1,5 +1,6 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
+#include <time.h> 
 using namespace cv;
 using namespace std;
 
@@ -31,7 +32,6 @@ void detect_eel(Mat& input, Mat& output, int brightness)
 				fixed_data = 255;
 				sum++;
 			}
-			//double fixed_data = pow(static_cast<double>(data[j]) / 255.0, 1 / exp(value)) * 255;
 			data[j] = static_cast<uchar>(fixed_data);
 		}
 	}
@@ -50,9 +50,15 @@ void detect_eel(Mat& input, Mat& output, int brightness)
 			max_contour = i;
 		}
 	}
+	
+	for (vector<Point>::size_type i; i < contours[max_contour].size(); i++)
+	{
+
+	}
+
 	drawContours(cam_img, contours, max_contour, Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
 	drawContours(detect, contours, max_contour, Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
-	cout << cnt << endl;
+	//cout << cnt << endl;
 	//cvtColor(detect, detect, COLOR_GRAY2BGR);
 	putText(detect, to_string(sum), Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
 
@@ -77,6 +83,9 @@ int main()
 	createTrackbar("Brightness to detect", "detect", 0, 255, on_trackbar);
 	while (1)
 	{
+		clock_t begin_t, end_t;
+		begin_t = clock();
+
 		brightness_to_detect = getTrackbarPos("Brightness to detect", "detect");
 		detect_eel(img, detect_img, brightness_to_detect);
 		imshow("detect", detect_img);
@@ -84,6 +93,9 @@ int main()
 		{
 			break;
 		}
+
+		end_t = clock();
+		cout << "실행시간:" << (double)(end_t - begin_t) / CLOCKS_PER_SEC << endl;
 	}
 	return 0;
 }
