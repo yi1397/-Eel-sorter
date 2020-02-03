@@ -12,7 +12,9 @@ void detect_eel(Mat& input, Mat& output, int brightness)
 {
 	int sum = 0;
 	Mat cam_img = input.clone();
-	Mat detect;
+	Mat canny_img;
+	Mat detect(input.size(), CV_8UC3);
+	detect = Scalar(0, 0, 0);
 	Mat hsv_img;
 	cvtColor(cam_img, hsv_img, COLOR_BGR2HSV);
 	vector<Mat> channels;
@@ -33,16 +35,17 @@ void detect_eel(Mat& input, Mat& output, int brightness)
 			data[j] = static_cast<uchar>(fixed_data);
 		}
 	}
-	detect = channels[2];
-	Canny(detect, detect, 1, 1, 3);
+	canny_img = channels[2];
+	Canny(canny_img, canny_img, 1, 1, 3);
 	vector<vector<Point>> contours;
 	vector<Vec4i> hierarchy;
-	findContours(detect, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0));
+	findContours(canny_img, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0));
 	for (int i = 0; i < contours.size(); i++)
 	{
-		drawContours(cam_img, contours, i, Scalar(0,0,255), 2, 8, hierarchy, 0, Point());
+		drawContours(cam_img, contours, i, Scalar(0, 0, 255), 2, 8, hierarchy, 0, Point());
+		drawContours(detect, contours, i, Scalar(0, 0, 255), 2, 8, hierarchy, 0, Point());
 	}
-	cvtColor(detect, detect, COLOR_GRAY2BGR);
+	//cvtColor(detect, detect, COLOR_GRAY2BGR);
 	putText(detect, to_string(sum), Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
 
 	hconcat(cam_img, detect, output);
