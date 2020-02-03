@@ -86,7 +86,8 @@ void detect_eel(Mat& input, Mat& output, int brightness, int color, int color_ra
 		}
 		line(detect, minA, minB, Scalar(255, 0, 0), 2);
 		putText(detect, to_string(min_dist), Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
-		cout << "길이:" << min_dist << "px" << endl;
+		putText(cam_img, to_string(detect_area / min_dist), Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
+		cout << "길이:" << detect_area / min_dist << "px" << endl;
 	}
 
 	cvtColor(threshhold_img, threshhold_img, COLOR_GRAY2BGR);
