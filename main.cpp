@@ -12,7 +12,7 @@ void detect_eel(Mat& input, Mat& output, int brightness)
 {
 	int sum = 0;
 	Mat cam_img = input.clone();
-	Mat canny_img;
+	Mat threshhold_img;
 	Mat detect(input.size(), CV_8UC3);
 	detect = Scalar(0, 0, 0);
 	Mat hsv_img;
@@ -35,16 +35,24 @@ void detect_eel(Mat& input, Mat& output, int brightness)
 			data[j] = static_cast<uchar>(fixed_data);
 		}
 	}
-	canny_img = channels[2];
-	Canny(canny_img, canny_img, 1, 1, 3);
+	threshhold_img = channels[2];
+	imshow("test", threshhold_img);
 	vector<vector<Point>> contours;
 	vector<Vec4i> hierarchy;
-	findContours(canny_img, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0));
+	findContours(threshhold_img, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0));
+	int cnt = 0;
+	int max_contour = 0;
 	for (int i = 0; i < contours.size(); i++)
 	{
-		drawContours(cam_img, contours, i, Scalar(0, 0, 255), 2, 8, hierarchy, 0, Point());
-		drawContours(detect, contours, i, Scalar(0, 0, 255), 2, 8, hierarchy, 0, Point());
+		cnt++;
+		if (contours[max_contour].size() < contours[i].size())
+		{
+			max_contour = i;
+		}
 	}
+	drawContours(cam_img, contours, max_contour, Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
+	drawContours(detect, contours, max_contour, Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
+	cout << cnt << endl;
 	//cvtColor(detect, detect, COLOR_GRAY2BGR);
 	putText(detect, to_string(sum), Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
 
