@@ -10,7 +10,7 @@ double calc_dist(Point A, Point B)
 	int x_dist = A.x - B.x;
 	int y_dist = A.y - B.y;
 	dist = x_dist * x_dist + y_dist * y_dist;
-	return sqrt(dist);
+	return sqrt((double)dist);
 
 }
 
@@ -71,18 +71,21 @@ void detect_eel(Mat& input, Mat& output, int brightness)
 		//copy(contours[max_contour].begin(), contours[max_contour].end(), detect_contour.begin());
 		for (int i = 0; i < contours[max_contour].size()/2; i++)
 		{
-			int j = (i + contours[max_contour].size() / 2);
-			int dist = calc_dist(contours[max_contour][i], contours[max_contour][j]);
-			if (dist < min_dist)
+			for (int j = -((int)contours[max_contour].size() / 4) + 1; j < ((int)contours[max_contour].size() / 4); j++)
 			{
-				min_dist = dist;
-				minA = contours[max_contour][i];
-				minB = contours[max_contour][j];
+				int k = ((i + contours[max_contour].size() / 2) + j)% contours[max_contour].size();
+				double dist = calc_dist(contours[max_contour][i], contours[max_contour][k]);
+				if (dist < min_dist)
+				{
+					min_dist = dist;
+					minA = contours[max_contour][i];
+					minB = contours[max_contour][k];
+				}
 			}
 		}
 		line(detect, minA, minB, Scalar(255, 0, 0), 2);
 		putText(detect, to_string(min_dist), Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
-		//cout << min_dist << "px" << endl;
+		cout << "±æÀÌ:" << min_dist << "px" << endl;
 	}
 	drawContours(cam_img, contours, max_contour, Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
 	drawContours(detect, contours, max_contour, Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
