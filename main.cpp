@@ -87,10 +87,11 @@ void detect_eel(Mat& input, Mat& output, int brightness, int color, int color_ra
 		putText(detect, to_string(min_dist), Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
 		cout << "±æÀÌ:" << min_dist << "px" << endl;
 	}
-	drawContours(cam_img, contours, max_contour, Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
+
+	cvtColor(threshhold_img, threshhold_img, COLOR_GRAY2BGR);
+	drawContours(threshhold_img, contours, max_contour, Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
 	drawContours(detect, contours, max_contour, Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
 	//cout << cnt << endl;
-	cvtColor(threshhold_img, threshhold_img, COLOR_GRAY2BGR);
 	putText(threshhold_img, to_string(sum), Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
 	hconcat(cam_img, threshhold_img, output);
 	hconcat(output, detect, output);
@@ -105,7 +106,7 @@ int main()
 	Mat detect_img;
 	Mat view_img;
 
-	img = imread("test.jpg");
+	img = imread("noise.jpg");
 	if (img.empty())
 	{
 		cout << "No img" << endl;
@@ -118,6 +119,7 @@ int main()
 	createTrackbar(brightness_trackbar_name, "detect", 0, 255, on_trackbar);
 	createTrackbar(color_trackbar_name, "detect", 0, 180, on_trackbar);
 	createTrackbar(color_range_trackbar_name, "detect", 0, 90, on_trackbar);
+	setTrackbarPos(brightness_trackbar_name, "detect", 231);
 	while (1)
 	{
 		clock_t begin_t, end_t;
