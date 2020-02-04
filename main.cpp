@@ -98,7 +98,7 @@ void detect_eel(
 			}
 		}
 		line(detect, minA, minB, Scalar(255, 0, 0), 2);
-		putText(detect, to_string(min_dist), 
+		putText(detect, to_string(round(min_dist / px_to_cm_ratio)),
 			Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
 		length = round(detect_area / min_dist / px_to_cm_ratio);
 		putText(cam_img, to_string(length),
@@ -112,7 +112,8 @@ void detect_eel(
 	drawContours(detect, contours, max_contour, 
 		Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
 	//cout << cnt << endl;
-	putText(threshhold_img, to_string(round(detect_area)), 
+	putText(threshhold_img, 
+		to_string(round(detect_area/ 21.0)), 
 		Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
 	hconcat(cam_img, threshhold_img, output);
 	hconcat(output, detect, output);
