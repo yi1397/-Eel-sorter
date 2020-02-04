@@ -28,29 +28,29 @@ void detect_eel(
 {
 	double detect_area = 0;
 	Mat cam_img = input.clone();
-	Mat threshhold_img;
+	Mat threshhold_img(input.size(), CV_8U);
 	Mat detect(input.size(), CV_8UC3);
 	detect = Scalar(0, 0, 0);
 	Mat hsv_img;
 	cvtColor(cam_img, hsv_img, COLOR_BGR2HSV);
 	vector<Mat> channels;
 	split(hsv_img, channels);
-	
 	for (int i = 0; i < hsv_img.rows; i++)
 	{
-		uchar* data = channels[2].ptr<uchar>(i);
+		uchar* fixed_data = threshhold_img.ptr<uchar>(i);	//채도
+		uchar* data_s = channels[1].ptr<uchar>(i);	//채도
+		uchar* data_v = channels[2].ptr<uchar>(i);	//밝기
 		for (int j = 0; j < hsv_img.cols; j++)
 		{
-			int fixed_data = 0;
-			if (data[j] < brightness)
+			int fix_value = 0;
+			if (data_s[j] < saturation || data_v[j] < brightness)
 			{
-				fixed_data = 255;
+				fix_value = 255;
 				//sum++;
 			}
-			data[j] = static_cast<uchar>(fixed_data);
+			fixed_data[j] = static_cast<uchar>(fix_value);
 		}
 	}
-	threshhold_img = channels[2];
 	vector<vector<Point>> contours;
 	vector<Vec4i> hierarchy;
 	findContours(threshhold_img, contours, hierarchy, 
@@ -123,17 +123,19 @@ int main()
 	Mat detect_img;
 	Mat view_img;
 
-	img = imread("red.png");
+	img = imread("a.png");
 	if (img.empty())
 	{
 		cout << "No img" << endl;
 		return -1;
 	}
 	string brightness_trackbar_name = "감지할밝기";
+	string saturation_trackbar_name = "감지할채도";
 	//string color_trackbar_name = "감지할색상";
 	//string color_range_trackbar_name = "색상범위";
 	namedWindow("detect", WINDOW_AUTOSIZE);
 	createTrackbar(brightness_trackbar_name, "detect", 0, 255, on_trackbar);
+	createTrackbar(saturation_trackbar_name, "detect", 0, 255, on_trackbar);
 	//createTrackbar(color_trackbar_name, "detect", 0, 180, on_trackbar);
 	//createTrackbar(color_range_trackbar_name, "detect", 0, 90, on_trackbar);
 	setTrackbarPos(brightness_trackbar_name, "detect", 233);
@@ -143,6 +145,7 @@ int main()
 		begin_t = clock();
 
 		brightness_to_detect = getTrackbarPos(brightness_trackbar_name, "detect");
+		saturation_to_detect = getTrackbarPos(saturation_trackbar_name, "detect");
 		//color_to_detect = getTrackbarPos(color_trackbar_name, "detect");
 		//color_range = getTrackbarPos(color_range_trackbar_name, "detect");
 		detect_eel(img, detect_img, brightness_to_detect, saturation_to_detect);
