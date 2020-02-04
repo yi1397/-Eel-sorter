@@ -138,7 +138,8 @@ int main()
 	createTrackbar(saturation_trackbar_name, "detect", 0, 255, on_trackbar);
 	//createTrackbar(color_trackbar_name, "detect", 0, 180, on_trackbar);
 	//createTrackbar(color_range_trackbar_name, "detect", 0, 90, on_trackbar);
-	setTrackbarPos(brightness_trackbar_name, "detect", 233);
+	setTrackbarPos(brightness_trackbar_name, "detect", 210);
+	setTrackbarPos(saturation_trackbar_name, "detect", 210);
 	while (1)
 	{
 		clock_t begin_t, end_t;
