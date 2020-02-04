@@ -97,13 +97,13 @@ void detect_eel(
 		putText(detect, to_string(min_dist), 
 			Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
 		putText(cam_img, to_string(detect_area / min_dist), 
-			Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
+			Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(255, 0, 0), 2);
 		cout << "±æÀÌ:" << detect_area / min_dist << "px" << endl;
 	}
 
 	cvtColor(threshhold_img, threshhold_img, COLOR_GRAY2BGR);
 	drawContours(threshhold_img, contours, max_contour, 
-		Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
+		Scalar(255, 0, 0), 2, 8, hierarchy, 0, Point());
 	drawContours(detect, contours, max_contour, 
 		Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
 	//cout << cnt << endl;
