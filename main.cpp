@@ -169,6 +169,14 @@ int main()
 			setTrackbarPos(brightness_trackbar_name, "detect", 
 				getTrackbarPos(brightness_trackbar_name, "detect") + 1);
 			break;
+		case 2490368:
+			setTrackbarPos(saturation_trackbar_name, "detect",
+				getTrackbarPos(saturation_trackbar_name, "detect") + 1);
+			break;
+		case 2621440:
+			setTrackbarPos(saturation_trackbar_name, "detect",
+				getTrackbarPos(saturation_trackbar_name, "detect") - 1);
+			break;
 		}
 
 		end_t = clock();
