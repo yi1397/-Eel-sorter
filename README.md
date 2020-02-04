@@ -1,4 +1,4 @@
 # Eel-sorter
-장어의 크기를 측정하는 프로젝트
+장어선별기 제작을 위한 소스코드
 
 ![result](./result.PNG)
