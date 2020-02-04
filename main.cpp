@@ -19,7 +19,12 @@ void on_trackbar(int, void*)
 
 }
 
-void detect_eel(Mat& input, Mat& output, int brightness, int color, int color_range)
+void detect_eel(
+	Mat& input, 
+	Mat& output, 
+	int brightness, 
+	int saturation
+)
 {
 	double detect_area = 0;
 	Mat cam_img = input.clone();
@@ -48,7 +53,8 @@ void detect_eel(Mat& input, Mat& output, int brightness, int color, int color_ra
 	threshhold_img = channels[2];
 	vector<vector<Point>> contours;
 	vector<Vec4i> hierarchy;
-	findContours(threshhold_img, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0));
+	findContours(threshhold_img, contours, hierarchy, 
+		RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0));
 	int cnt = 0;
 	int max_contour = 0;
 	for (int i = 0; i < contours.size(); i++)
@@ -68,14 +74,17 @@ void detect_eel(Mat& input, Mat& output, int brightness, int color, int color_ra
 		double min_dist = 10e+10;
 		Point minA;
 		Point minB;
-		//vector<Point> detect_contour;
-		//copy(contours[max_contour].begin(), contours[max_contour].end(), detect_contour.begin());
+		
 		for (int i = 0; i < contours[max_contour].size()/2; i++)
 		{
-			for (int j = -((int)contours[max_contour].size() / 8) + 1; j < ((int)contours[max_contour].size() / 8); j++)
+			for (int j = -((int)contours[max_contour].size() / 8) + 1;
+				j < ((int)contours[max_contour].size() / 8);
+				j++)
 			{
-				int k = ((i + contours[max_contour].size() / 2) + j)% contours[max_contour].size();
-				double dist = calc_dist(contours[max_contour][i], contours[max_contour][k]);
+				int k = ((i + contours[max_contour].size() / 2) + j)
+					% contours[max_contour].size();
+				double dist = calc_dist(contours[max_contour][i], 
+					contours[max_contour][k]);
 				if (dist < min_dist)
 				{
 					min_dist = dist;
@@ -85,16 +94,21 @@ void detect_eel(Mat& input, Mat& output, int brightness, int color, int color_ra
 			}
 		}
 		line(detect, minA, minB, Scalar(255, 0, 0), 2);
-		putText(detect, to_string(min_dist), Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
-		putText(cam_img, to_string(detect_area / min_dist), Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
+		putText(detect, to_string(min_dist), 
+			Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
+		putText(cam_img, to_string(detect_area / min_dist), 
+			Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
 		cout << "길이:" << detect_area / min_dist << "px" << endl;
 	}
 
 	cvtColor(threshhold_img, threshhold_img, COLOR_GRAY2BGR);
-	drawContours(threshhold_img, contours, max_contour, Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
-	drawContours(detect, contours, max_contour, Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
+	drawContours(threshhold_img, contours, max_contour, 
+		Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
+	drawContours(detect, contours, max_contour, 
+		Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
 	//cout << cnt << endl;
-	putText(threshhold_img, to_string(detect_area), Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
+	putText(threshhold_img, to_string(detect_area), 
+		Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
 	hconcat(cam_img, threshhold_img, output);
 	hconcat(output, detect, output);
 }
@@ -102,25 +116,26 @@ void detect_eel(Mat& input, Mat& output, int brightness, int color, int color_ra
 int main()
 {
 	int brightness_to_detect;
-	int color_to_detect;
-	int color_range;
+	int saturation_to_detect;
+	//int color_to_detect;
+	//int color_range;
 	Mat img;
 	Mat detect_img;
 	Mat view_img;
 
-	img = imread("noise.jpg");
+	img = imread("red.png");
 	if (img.empty())
 	{
 		cout << "No img" << endl;
 		return -1;
 	}
 	string brightness_trackbar_name = "감지할밝기";
-	string color_trackbar_name = "감지할색상";
-	string color_range_trackbar_name = "색상범위";
+	//string color_trackbar_name = "감지할색상";
+	//string color_range_trackbar_name = "색상범위";
 	namedWindow("detect", WINDOW_AUTOSIZE);
 	createTrackbar(brightness_trackbar_name, "detect", 0, 255, on_trackbar);
-	createTrackbar(color_trackbar_name, "detect", 0, 180, on_trackbar);
-	createTrackbar(color_range_trackbar_name, "detect", 0, 90, on_trackbar);
+	//createTrackbar(color_trackbar_name, "detect", 0, 180, on_trackbar);
+	//createTrackbar(color_range_trackbar_name, "detect", 0, 90, on_trackbar);
 	setTrackbarPos(brightness_trackbar_name, "detect", 233);
 	while (1)
 	{
@@ -128,12 +143,21 @@ int main()
 		begin_t = clock();
 
 		brightness_to_detect = getTrackbarPos(brightness_trackbar_name, "detect");
-		color_to_detect = getTrackbarPos(color_trackbar_name, "detect");
-		color_range = getTrackbarPos(color_range_trackbar_name, "detect");
-		detect_eel(img, detect_img, brightness_to_detect, color_to_detect, color_range);
+		//color_to_detect = getTrackbarPos(color_trackbar_name, "detect");
+		//color_range = getTrackbarPos(color_range_trackbar_name, "detect");
+		detect_eel(img, detect_img, brightness_to_detect, saturation_to_detect);
 		imshow("detect", detect_img);
-		if (waitKey(1) == 27)
+		switch (waitKeyEx(1))
 		{
+		case 27:
+			return 0;
+		case 2424832:
+			setTrackbarPos(brightness_trackbar_name, "detect", 
+				getTrackbarPos(brightness_trackbar_name, "detect") - 1);
+			break;
+		case 2555904:
+			setTrackbarPos(brightness_trackbar_name, "detect", 
+				getTrackbarPos(brightness_trackbar_name, "detect") + 1);
 			break;
 		}
 
