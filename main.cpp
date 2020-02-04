@@ -1,8 +1,11 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <time.h> 
+#include <cmath>
 using namespace cv;
 using namespace std;
+
+double px_to_cm_ratio = 20.94383;
 
 double calc_dist(Point A, Point B)
 {
@@ -26,6 +29,7 @@ void detect_eel(
 	int saturation
 )
 {
+	double length = 0;
 	double detect_area = 0;
 	Mat cam_img = input.clone();
 	Mat threshhold_img(input.size(), CV_8U);
@@ -96,7 +100,8 @@ void detect_eel(
 		line(detect, minA, minB, Scalar(255, 0, 0), 2);
 		putText(detect, to_string(min_dist), 
 			Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
-		putText(cam_img, to_string(detect_area / min_dist), 
+		length = round(detect_area / min_dist / px_to_cm_ratio);
+		putText(cam_img, to_string(length),
 			Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(255, 0, 0), 2);
 		cout << "±æÀÌ:" << detect_area / min_dist << "px" << endl;
 	}
@@ -107,7 +112,7 @@ void detect_eel(
 	drawContours(detect, contours, max_contour, 
 		Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
 	//cout << cnt << endl;
-	putText(threshhold_img, to_string(detect_area), 
+	putText(threshhold_img, to_string(round(detect_area)), 
 		Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
 	hconcat(cam_img, threshhold_img, output);
 	hconcat(output, detect, output);
