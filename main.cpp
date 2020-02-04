@@ -72,7 +72,7 @@ void detect_eel(Mat& input, Mat& output, int brightness, int color, int color_ra
 		//copy(contours[max_contour].begin(), contours[max_contour].end(), detect_contour.begin());
 		for (int i = 0; i < contours[max_contour].size()/2; i++)
 		{
-			for (int j = -((int)contours[max_contour].size() / 4) + 1; j < ((int)contours[max_contour].size() / 4); j++)
+			for (int j = -((int)contours[max_contour].size() / 8) + 1; j < ((int)contours[max_contour].size() / 8); j++)
 			{
 				int k = ((i + contours[max_contour].size() / 2) + j)% contours[max_contour].size();
 				double dist = calc_dist(contours[max_contour][i], contours[max_contour][k]);
@@ -121,7 +121,7 @@ int main()
 	createTrackbar(brightness_trackbar_name, "detect", 0, 255, on_trackbar);
 	createTrackbar(color_trackbar_name, "detect", 0, 180, on_trackbar);
 	createTrackbar(color_range_trackbar_name, "detect", 0, 90, on_trackbar);
-	setTrackbarPos(brightness_trackbar_name, "detect", 231);
+	setTrackbarPos(brightness_trackbar_name, "detect", 233);
 	while (1)
 	{
 		clock_t begin_t, end_t;
