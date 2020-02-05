@@ -6,6 +6,60 @@ using namespace cv;
 using namespace std;
 
 double px_to_cm_ratio = 20.94383;
+void thinningIteration(cv::Mat& im, int iter)
+{
+	cv::Mat marker = cv::Mat::zeros(im.size(), CV_8UC1);
+
+	for (int i = 1; i < im.rows - 1; i++)
+	{
+		for (int j = 1; j < im.cols - 1; j++)
+		{
+			uchar p2 = im.at<uchar>(i - 1, j);
+			uchar p3 = im.at<uchar>(i - 1, j + 1);
+			uchar p4 = im.at<uchar>(i, j + 1);
+			uchar p5 = im.at<uchar>(i + 1, j + 1);
+			uchar p6 = im.at<uchar>(i + 1, j);
+			uchar p7 = im.at<uchar>(i + 1, j - 1);
+			uchar p8 = im.at<uchar>(i, j - 1);
+			uchar p9 = im.at<uchar>(i - 1, j - 1);
+
+			int A = (p2 == 0 && p3 == 1) + (p3 == 0 && p4 == 1) +
+				(p4 == 0 && p5 == 1) + (p5 == 0 && p6 == 1) +
+				(p6 == 0 && p7 == 1) + (p7 == 0 && p8 == 1) +
+				(p8 == 0 && p9 == 1) + (p9 == 0 && p2 == 1);
+			int B = p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9;
+			int m1 = iter == 0 ? (p2 * p4 * p6) : (p2 * p4 * p8);
+			int m2 = iter == 0 ? (p4 * p6 * p8) : (p2 * p6 * p8);
+
+			if (A == 1 && (B >= 2 && B <= 6) && m1 == 0 && m2 == 0)
+				marker.at<uchar>(i, j) = 1;
+		}
+	}
+
+	im &= ~marker;
+}
+
+/**
+ * Function for thinning the given binary image
+ *
+ * @param  im  Binary image with range = 0-255
+ */
+void thinning(cv::Mat& im)
+{
+	im /= 255;
+
+	cv::Mat prev = cv::Mat::zeros(im.size(), CV_8UC1);
+	cv::Mat diff;
+
+	do {
+		thinningIteration(im, 0);
+		thinningIteration(im, 1);
+		cv::absdiff(im, prev, diff);
+		im.copyTo(prev);
+	} while (cv::countNonZero(diff) > 0);
+
+	im *= 255;
+}
 
 double calc_dist(Point A, Point B)
 {
@@ -32,7 +86,7 @@ void detect_eel(
 	double length = 0;
 	double detect_area = 0;
 	Mat cam_img = input.clone();
-	Mat threshhold_img(input.size(), CV_8U);
+	Mat threshold_img(input.size(), CV_8U);
 	Mat detect(input.size(), CV_8UC3);
 	detect = Scalar(0, 0, 0);
 	Mat hsv_img;
@@ -41,7 +95,7 @@ void detect_eel(
 	split(hsv_img, channels);
 	for (int i = 0; i < hsv_img.rows; i++)
 	{
-		uchar* fixed_data = threshhold_img.ptr<uchar>(i);	//채도
+		uchar* fixed_data = threshold_img.ptr<uchar>(i);	//채도
 		uchar* data_s = channels[1].ptr<uchar>(i);	//채도
 		uchar* data_v = channels[2].ptr<uchar>(i);	//밝기
 		for (int j = 0; j < hsv_img.cols; j++)
@@ -55,9 +109,12 @@ void detect_eel(
 			fixed_data[j] = static_cast<uchar>(fix_value);
 		}
 	}
+	Mat test = threshold_img.clone();
+	thinning(test);
+	imshow("test", test);
 	vector<vector<Point>> contours;
 	vector<Vec4i> hierarchy;
-	findContours(threshhold_img, contours, hierarchy, 
+	findContours(threshold_img, contours, hierarchy, 
 		RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0));
 	int cnt = 0;
 	int max_contour = 0;
@@ -106,16 +163,16 @@ void detect_eel(
 		cout << "길이:" << detect_area / min_dist << "px" << endl;
 	}
 
-	cvtColor(threshhold_img, threshhold_img, COLOR_GRAY2BGR);
-	drawContours(threshhold_img, contours, max_contour, 
+	cvtColor(threshold_img, threshold_img, COLOR_GRAY2BGR);
+	drawContours(threshold_img, contours, max_contour, 
 		Scalar(255, 0, 0), 2, 8, hierarchy, 0, Point());
 	drawContours(detect, contours, max_contour, 
 		Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
 	//cout << cnt << endl;
-	putText(threshhold_img, 
+	putText(threshold_img, 
 		to_string(round(detect_area / px_to_cm_ratio / px_to_cm_ratio)), 
 		Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
-	hconcat(cam_img, threshhold_img, output);
+	hconcat(cam_img, threshold_img, output);
 	hconcat(output, detect, output);
 }
 
@@ -129,7 +186,7 @@ int main()
 	Mat detect_img;
 	Mat view_img;
 
-	img = imread("a.png");
+	img = imread("b.png");
 	if (img.empty())
 	{
 		cout << "No img" << endl;
