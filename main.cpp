@@ -6,102 +6,26 @@ using namespace cv;
 using namespace std;
 
 double px_to_cm_ratio = 20.94383;
-static void thinningIteration(cv::Mat& im, int iter)
+
+void thinning(cv::Mat& img)
 {
-	
-}
+	cv::Mat skel(img.size(), CV_8UC1, cv::Scalar(0));
+	cv::Mat temp(img.size(), CV_8UC1);
+	cv::Mat element = cv::getStructuringElement(cv::MORPH_CROSS, cv::Size(3, 3));
+	bool done;
+	do
+	{
+		cv::morphologyEx(img, temp, cv::MORPH_OPEN, element);
+		cv::bitwise_not(temp, temp);
+		cv::bitwise_and(img, temp, temp);
+		cv::bitwise_or(skel, temp, skel);
+		cv::erode(img, img, element);
 
-void thinning(cv::Mat& im)
-{
-
-	cv::Mat prev = cv::Mat::zeros(im.size(), CV_8U);
-	cv::Mat diff;
-
-	do {
-		Mat marker = Mat::zeros(im.size(), CV_8U);
-
-		for (int i = 1; i < im.rows - 1; i++)
-		{
-			for (int j = 1; j < im.cols - 1; j++)
-			{
-				uchar p2 = im.at<uchar>(i - 1, j);
-				uchar p3 = im.at<uchar>(i - 1, j + 1);
-				uchar p4 = im.at<uchar>(i, j + 1);
-				uchar p5 = im.at<uchar>(i + 1, j + 1);
-				uchar p6 = im.at<uchar>(i + 1, j);
-				uchar p7 = im.at<uchar>(i + 1, j - 1);
-				uchar p8 = im.at<uchar>(i, j - 1);
-				uchar p9 = im.at<uchar>(i - 1, j - 1);
-
-				int A = (p2 == 0 && p3 == 255) + (p3 == 0 && p4 == 255) +
-					(p4 == 0 && p5 == 255) + (p5 == 0 && p6 == 255) +
-					(p6 == 0 && p7 == 255) + (p7 == 0 && p8 == 255) +
-					(p8 == 0 && p9 == 255) + (p9 == 0 && p2 == 255);
-				int B = (int)p2 + (int)p3 + (int)p4 + (int)p5 + (int)p6 + (int)p7 + (int)p8 + (int)p9;
-				int m1 = (p2 * p4 * p6);
-				int m2 = (p4 * p6 * p8);
-				if (A == 1 && (B >= 510 && B <= 1530) && m1 == 0 && m2 == 0)
-					marker.at<uchar>(i, j) = 255;
-			}
-		}
-
-		for (int i = 0; i < im.rows; i++)
-		{
-			uchar* im_data = im.ptr<uchar>(i);
-			uchar* mk_data = marker.ptr<uchar>(i);
-			for (int j = 0; j < im.cols; j++)
-			{
-				if (mk_data[j] == 0 && im_data[j] == 255)
-				{
-					im_data[j] = 255;
-				}
-				else im_data[j] = 0;
-			}
-		}
-		marker = Mat::zeros(im.size(), CV_8U);
-
-		for (int i = 1; i < im.rows - 1; i++)
-		{
-			for (int j = 1; j < im.cols - 1; j++)
-			{
-				uchar p2 = im.at<uchar>(i - 1, j);
-				uchar p3 = im.at<uchar>(i - 1, j + 1);
-				uchar p4 = im.at<uchar>(i, j + 1);
-				uchar p5 = im.at<uchar>(i + 1, j + 1);
-				uchar p6 = im.at<uchar>(i + 1, j);
-				uchar p7 = im.at<uchar>(i + 1, j - 1);
-				uchar p8 = im.at<uchar>(i, j - 1);
-				uchar p9 = im.at<uchar>(i - 1, j - 1);
-
-				int A = (p2 == 0 && p3 == 255) + (p3 == 0 && p4 == 255) +
-					(p4 == 0 && p5 == 255) + (p5 == 0 && p6 == 255) +
-					(p6 == 0 && p7 == 255) + (p7 == 0 && p8 == 255) +
-					(p8 == 0 && p9 == 255) + (p9 == 0 && p2 == 255);
-				int B = (int)p2 + (int)p3 + (int)p4 + (int)p5 + (int)p6 + (int)p7 + (int)p8 + (int)p9;
-				int m1 = (p2 * p4 * p8);
-				int m2 = (p2 * p6 * p8);
-				if (A == 1 && (B >= 510 && B <= 1530) && m1 == 0 && m2 == 0)
-					marker.at<uchar>(i, j) = 255;
-			}
-		}
-
-		for (int i = 0; i < im.rows; i++)
-		{
-			uchar* im_data = im.ptr<uchar>(i);
-			uchar* mk_data = marker.ptr<uchar>(i);
-			for (int j = 0; j < im.cols; j++)
-			{
-				if (mk_data[j] == 0 && im_data[j] == 255)
-				{
-					im_data[j] = 255;
-				}
-				else im_data[j] = 0;
-			}
-		}
-		cv::absdiff(im, prev, diff);
-		im.copyTo(prev);
-	} while (cv::countNonZero(diff) > 0);
-
+		double max;
+		cv::minMaxLoc(img, 0, &max);
+		done = (max == 0);
+	} while (!done);
+	img = skel;
 }
 
 double calc_dist(Point A, Point B)
@@ -152,9 +76,9 @@ void detect_eel(
 			fixed_data[j] = static_cast<uchar>(fix_value);
 		}
 	}
-	Mat test = threshold_img.clone();
-	thinning(test);
-	imshow("test", test);
+	//Mat test = threshold_img.clone();
+	//thinning(test);
+	//imshow("test", test);
 	vector<vector<Point>> contours;
 	vector<Vec4i> hierarchy;
 	findContours(threshold_img, contours, hierarchy, 
@@ -229,7 +153,7 @@ int main()
 	Mat detect_img;
 	Mat view_img;
 
-	img = imread("b.png");
+	img = imread("a.png");
 	if (img.empty())
 	{
 		cout << "No img" << endl;
