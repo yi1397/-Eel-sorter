@@ -153,10 +153,10 @@ int main()
 	Mat detect_img;
 	Mat view_img;
 
-	img = imread("a.png");
+	img = imread("t.png");
 	if (img.empty())
 	{
-		cout << "No img" << endl;
+		cerr << "No img" << endl;
 		return -1;
 	}
 	string brightness_trackbar_name = "°¨ÁöÇÒ¹à±â";
