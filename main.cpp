@@ -153,7 +153,7 @@ int main()
 	Mat detect_img;
 	Mat view_img;
 
-	img = imread("t.png");
+	img = imread("test_img/t.png");
 	if (img.empty())
 	{
 		cerr << "No img" << endl;
