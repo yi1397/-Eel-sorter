@@ -149,14 +149,14 @@ int main()
 	int saturation_to_detect;
 	//int color_to_detect;
 	//int color_range;
+	VideoCapture cap(1);
 	Mat img;
 	Mat detect_img;
 	Mat view_img;
 
-	img = imread("test_img/t.png");
-	if (img.empty())
+	if (!cap.isOpened())
 	{
-		cerr << "No img" << endl;
+		cerr << "Ä«¸Ş¶ó¸¦ ¿­ ¼ö ¾øÀ½" << endl;
 		return -1;
 	}
 	string brightness_trackbar_name = "°¨ÁöÇÒ¹à±â";
@@ -172,8 +172,16 @@ int main()
 	setTrackbarPos(saturation_trackbar_name, "detect", 160);
 	while (1)
 	{
+
 		clock_t begin_t, end_t;
 		begin_t = clock();
+
+		cap.read(img);
+		if (img.empty())
+		{
+			cerr << "ºó ¿µ»óÀÌ Ä¸ÃÄµÊ" << endl;
+			break;
+		}
 
 		brightness_to_detect = getTrackbarPos(brightness_trackbar_name, "detect");
 		saturation_to_detect = getTrackbarPos(saturation_trackbar_name, "detect");
