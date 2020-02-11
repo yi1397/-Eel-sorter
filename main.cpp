@@ -5,7 +5,7 @@
 using namespace cv;
 using namespace std;
 
-double px_to_cm_ratio = 20.94383;
+double px_to_cm_ratio = 1;
 
 void thinning(cv::Mat& img)
 {
@@ -163,7 +163,7 @@ int main()
 	string saturation_trackbar_name = "감지할채도";
 	//string color_trackbar_name = "감지할색상";
 	//string color_range_trackbar_name = "색상범위";
-	namedWindow("detect", WINDOW_AUTOSIZE);
+	namedWindow("detect", WINDOW_FREERATIO);
 	createTrackbar(brightness_trackbar_name, "detect", 0, 255, on_trackbar);
 	createTrackbar(saturation_trackbar_name, "detect", 0, 255, on_trackbar);
 	//createTrackbar(color_trackbar_name, "detect", 0, 180, on_trackbar);
