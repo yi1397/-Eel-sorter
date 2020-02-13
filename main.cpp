@@ -2,6 +2,7 @@
 #include <iostream>
 #include <time.h> 
 #include <cmath>
+#include "Histogram1D.h"
 using namespace cv;
 using namespace std;
 
@@ -44,10 +45,11 @@ void on_trackbar(int, void*)
 }
 
 void detect_eel(
-	Mat& input, 
-	Mat& output, 
-	int brightness, 
-	int saturation
+	Mat& input,
+	Mat& output,
+	int brightness,
+	int saturation,
+	Histogram1D& h
 )
 {
 	double length = 0;
@@ -65,6 +67,8 @@ void detect_eel(
 		uchar* fixed_data = threshold_img.ptr<uchar>(i);	//채도
 		uchar* data_s = channels[1].ptr<uchar>(i);	//채도
 		uchar* data_v = channels[2].ptr<uchar>(i);	//밝기
+		Mat hist = h.getHistogramImg(channels[1]);
+		imshow("histogram", hist);
 		for (int j = 0; j < hsv_img.cols; j++)
 		{
 			int fix_value = 0;
@@ -145,11 +149,12 @@ void detect_eel(
 
 int main()
 {
+	Histogram1D h;
 	int brightness_to_detect;
 	int saturation_to_detect;
 	//int color_to_detect;
 	//int color_range;
-	VideoCapture cap(1);
+	VideoCapture cap(0);
 	Mat img;
 	Mat detect_img;
 	Mat view_img;
@@ -187,7 +192,7 @@ int main()
 		saturation_to_detect = getTrackbarPos(saturation_trackbar_name, "detect");
 		//color_to_detect = getTrackbarPos(color_trackbar_name, "detect");
 		//color_range = getTrackbarPos(color_range_trackbar_name, "detect");
-		detect_eel(img, detect_img, brightness_to_detect, saturation_to_detect);
+		detect_eel(img, detect_img, brightness_to_detect, saturation_to_detect, h);
 		imshow("detect", detect_img);
 		switch (waitKeyEx(1))
 		{
