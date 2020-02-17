@@ -62,24 +62,26 @@ void detect_eel(
 	cvtColor(cam_img, hsv_img, COLOR_BGR2HSV);
 	vector<Mat> channels;
 	split(hsv_img, channels);
-	for (int i = 0; i < hsv_img.rows; i++)
+
+
+	uchar* fixed_data = (uchar*)threshold_img.data;
+	uchar* data_s = (uchar*)channels[1].data;
+	uchar* data_v = (uchar*)channels[2].data;
+	int data_len = channels[1].rows * channels[1].cols;
+
+	for (int i = 0; i < data_len; i++)
 	{
-		uchar* fixed_data = threshold_img.ptr<uchar>(i);	//채도
-		uchar* data_s = channels[1].ptr<uchar>(i);	//채도
-		uchar* data_v = channels[2].ptr<uchar>(i);	//밝기
-		//Mat hist = h.getHistogramImg(channels[1]);
-		//imshow("histogram", hist);
-		for (int j = 0; j < hsv_img.cols; j++)
+
+		int fix_value = 0;
+		if (data_s[i] < saturation || data_v[i] < brightness)
 		{
-			int fix_value = 0;
-			if (data_s[j] < saturation || data_v[j] < brightness)
-			{
-				fix_value = 255;
-				//sum++;
-			}
-			fixed_data[j] = static_cast<uchar>(fix_value);
+
+			fix_value = 255;
+			//sum++;
 		}
+		fixed_data[i] = static_cast<uchar>(fix_value);
 	}
+
 	//Mat test = threshold_img.clone();
 	//thinning(test);
 	//imshow("test", test);
