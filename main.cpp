@@ -8,6 +8,7 @@ using namespace std;
 
 double px_to_cm_ratio = 1;
 
+/**
 void thinning(cv::Mat& img)
 {
 	cv::Mat skel(img.size(), CV_8UC1, cv::Scalar(0));
@@ -28,6 +29,7 @@ void thinning(cv::Mat& img)
 	} while (!done);
 	img = skel;
 }
+*/
 
 double calc_dist(Point A, Point B)
 {
@@ -71,15 +73,7 @@ void detect_eel(
 
 	for (int i = 0; i < data_len; i++)
 	{
-
-		int fix_value = 0;
-		if (data_s[i] < saturation || data_v[i] < brightness)
-		{
-
-			fix_value = 255;
-			//sum++;
-		}
-		fixed_data[i] = static_cast<uchar>(fix_value);
+		fixed_data[i] = data_s[i] < saturation || data_v[i] < brightness ? 255u : 0u;
 	}
 
 	//Mat test = threshold_img.clone();
@@ -109,7 +103,7 @@ void detect_eel(
 		Point minA;
 		Point minB;
 		
-		for (int i = 0; i < contours[max_contour].size()/2; i++)
+		for (int i = 0; i < contours[max_contour].size()/2; i++) //1중 for문으로 변경해야함
 		{
 			for (int j = -((int)contours[max_contour].size() / 8) + 1;
 				j < ((int)contours[max_contour].size() / 8);
@@ -119,10 +113,10 @@ void detect_eel(
 					% contours[max_contour].size();
 				double dist = calc_dist(contours[max_contour][i], 
 					contours[max_contour][k]);
-				if (dist < min_dist)
+				if (dist < min_dist) //minA minB 제거후 삼항연산자로 대체해야함
 				{
 					min_dist = dist;
-					minA = contours[max_contour][i];
+					minA = contours[max_contour][i]; 
 					minB = contours[max_contour][k];
 				}
 			}
