@@ -14,7 +14,9 @@ double calc_dist(Point A, Point B)
 	double dist; 
 	int x_dist = A.x - B.x; // A와 B의 x방향 거리차이 
 	int y_dist = A.y - B.y; // A와 B의 y방향 거리차이
+
 	dist = x_dist * x_dist + y_dist * y_dist; // A와 B의 거리차이의 제곱의 합
+
 	return sqrt((double)dist); // A와 B의 거리를 return해줌
 
 }
@@ -35,12 +37,19 @@ void detect_eel(
 // 장어의 길이를 감지하고 결과 이미지를 출력해주는 함수
 {
 	double length = 0; // 장어의 길이가 기억될 변수
+
 	double detect_area = 0; // 장어의 면적이 기억될 변수
+
 	Mat cam_img = input.clone(); // input이미지를 복사함
+
 	Mat threshold_img(input.size(), CV_8U); // input이미지와 같은크기의 비어있는 cv::Mat 변수
+
 	Mat detect(input.size(), CV_8UC3); // input이미지와 같은크기의 비어있는 cv::Mat 변수
+
 	detect = Scalar(0, 0, 0); // detect를 검은색 이미지로 초기화
+
 	Mat hsv_img; // hsv형식의 색상 데이터가 저장될 cv::Mat 변수
+
 	cvtColor(cam_img, hsv_img, COLOR_BGR2HSV); 
 	// hsv_img변수에 cam_img의 데이터를 hsv형식으로 변환해서 저장
 
@@ -65,8 +74,10 @@ void detect_eel(
 	findContours(threshold_img, contours, hierarchy, 
 		RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0));
 	// threshold의 윤곽선을 contours에 저장함
+
 	int size = contours.size(); // contours에 저장된 contour의 갯수를 기억하는 변수
 	int max_contour = 0;
+
 	if (size) // contour가 없으면 실행하지 않음
 	{
 		int max_Area = 0; // 가장큰 contour의 면적을 기억하는 변수
@@ -79,7 +90,9 @@ void detect_eel(
 			}
 		}
 		detect_area = contourArea(contours[max_contour]); // 가장 면적이 큰 contour의 면적을 detect_area에 저장
-		double min_dist = 10e+10; // 장어의 두께를 구하는 함수
+
+		double min_dist = 10e+10; // 장어의 두께를 기억하는 함수
+
 		Point minA, minB; // contour의 cv::Point를 저장할 변수
 		
 		for (int i = 0; i < contours[max_contour].size() >> 1; i++) // 가장 면적이 큰 contour의 0번부터 절반까지 반복
@@ -93,36 +106,56 @@ void detect_eel(
 				int k = ((i + contours[max_contour].size() / 2) + j)
 					% contours[max_contour].size();
 				// k는 i의 반대지점에서 ± contour크기의 1/8 사이
+
 				double dist = calc_dist(contours[max_contour][i], contours[max_contour][k]); 
 				// 가장큰 contour의 i번째와 k번째 사이의 거리를 기억하는 변수
+
 				if (dist < min_dist) // dist가 최단거리이면
 				{
 					min_dist = dist; // dist를 저장
+
 					minA = contours[max_contour][i]; minB = contours[max_contour][k];
 					// i와 k의 위치를 기억
 				}
 			}
 		}
-		line(detect, minA, minB, Scalar(255, 0, 0), 2); //제거해도 되는 라인
+		line(detect, minA, minB, Scalar(255, 0, 0), 2);
+		// 결과 이미지에 minA와 minB 사이를 표시해줌
+
 		putText(detect, to_string(round(min_dist / px_to_cm_ratio * 10) / 10),
 			Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
+		// 결과 이미지에 두께를 표시해줌
+
 		length = round(detect_area / min_dist / px_to_cm_ratio);
+		// 길이를 계산함
+
 		putText(cam_img, to_string(length),
 			Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(255, 0, 0), 2);
+		// 결과 이미지에 길이를 표시해줌
+
 		cout << "길이:" << detect_area / min_dist << "px" << endl;
+		// 콘솔창에 길이를 출력
 	}
 
 	cvtColor(threshold_img, threshold_img, COLOR_GRAY2BGR);
+	// 결과 이미지를 컬러로 변환
+
 	drawContours(threshold_img, contours, max_contour, 
 		Scalar(255, 0, 0), 2, 8, hierarchy, 0, Point());
+	// 결과 이미지에 장어 윤곽선을 표시해줌
+
 	drawContours(detect, contours, max_contour, 
 		Scalar(0, 0, 255), 1, 8, hierarchy, 0, Point());
-	//cout << cnt << endl;
+	// 결과 이미지에 장어 윤곽선을 표시해줌
+
 	putText(threshold_img, 
 		to_string(round(detect_area / px_to_cm_ratio / px_to_cm_ratio)), 
 		Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
+	// 결과 이미지에 장어의 면적을 표시해줌
+	
 	hconcat(cam_img, threshold_img, output);
 	hconcat(output, detect, output);
+	// 3개의 결과 이미지를 출력할 이미지에 저장
 }
 
 int main()
