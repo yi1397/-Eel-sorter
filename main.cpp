@@ -160,29 +160,40 @@ void detect_eel(
 
 int main()
 {
-	//Histogram1D h;
-	int brightness_to_detect;
-	int saturation_to_detect;
-	//int color_to_detect;
-	//int color_range;
-	VideoCapture cap(0);
+	//Histogram1D h; // Histogram을 이용한 장어 감지를 위한 클래스(아직 기능을 추가하지 않음)
+
+	int brightness_to_detect; // 감지할 밝기 문턱값
+	int saturation_to_detect; // 감지할 채도 문턱값
+
+	VideoCapture cap(0); //카메라를 불러옴
+
 	Mat img;
 	Mat detect_img;
-	Mat view_img;
 
 	if (!cap.isOpened())
+		//카메라 실행 실패
 	{
 		cerr << "카메라를 열 수 없음" << endl;
 		return -1;
 	}
+
 	string brightness_trackbar_name = "감지할밝기";
 	string saturation_trackbar_name = "감지할채도";
+	// trackbar의 이름
+
 	namedWindow("detect", WINDOW_FREERATIO);
+	// 출력 윈도우
+
 	createTrackbar(brightness_trackbar_name, "detect", 0, 255, on_trackbar);
 	createTrackbar(saturation_trackbar_name, "detect", 0, 255, on_trackbar);
+	// 윈도우에 trackbar를 만듬
+
 	setTrackbarPos(brightness_trackbar_name, "detect", 160);
 	setTrackbarPos(saturation_trackbar_name, "detect", 160);
+	// trackbar의 기본값을 설정
+
 	while (1)
+		// 반복
 	{
 
 		clock_t begin_t, end_t;
@@ -197,27 +208,40 @@ int main()
 
 		brightness_to_detect = getTrackbarPos(brightness_trackbar_name, "detect");
 		saturation_to_detect = getTrackbarPos(saturation_trackbar_name, "detect");
+
 		detect_eel(img, detect_img, brightness_to_detect, saturation_to_detect);
+		// 장어를 감지하는 함수 호출
+
 		imshow("detect", detect_img);
-		switch (waitKeyEx(1))
+
+		switch (waitKeyEx(1)) // 키보드 입력
 		{
-		case 27:
+		case 27: // esc 키 입력
 			return 0;
-		case 2424832:
+			// 종료
+		case 2424832: // ← 키 입력
 			setTrackbarPos(brightness_trackbar_name, "detect", 
 				getTrackbarPos(brightness_trackbar_name, "detect") - 1);
+			// brightness_trackbar_name의 값 1 감소
+
 			break;
-		case 2555904:
+		case 2555904: // → 키 입력
 			setTrackbarPos(brightness_trackbar_name, "detect", 
 				getTrackbarPos(brightness_trackbar_name, "detect") + 1);
+			// brightness_trackbar_name의 값 1 증가
+
 			break;
-		case 2490368:
+		case 2490368: // ↑ 키 입력
 			setTrackbarPos(saturation_trackbar_name, "detect",
 				getTrackbarPos(saturation_trackbar_name, "detect") + 1);
+			// saturation_trackbar_name의 값 1 증가
+
 			break;
-		case 2621440:
+		case 2621440: // ↓ 키 입력
 			setTrackbarPos(saturation_trackbar_name, "detect",
 				getTrackbarPos(saturation_trackbar_name, "detect") - 1);
+			// saturation_trackbar_name의 값 1 감소
+
 			break;
 		}
 
