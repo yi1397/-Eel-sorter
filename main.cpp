@@ -196,11 +196,13 @@ int main()
 		// 반복
 	{
 
-		clock_t begin_t, end_t;
-		begin_t = clock();
+		clock_t begin_t, end_t; // 실행 시간을 기억하는 변수
+		begin_t = clock(); // 시작 시간 기억
 
-		cap.read(img);
+		cap.read(img); // 영상을 카메라에서 읽어옴
+
 		if (img.empty())
+			//영상 인식 실패
 		{
 			cerr << "빈 영상이 캡쳐됨" << endl;
 			break;
@@ -208,35 +210,41 @@ int main()
 
 		brightness_to_detect = getTrackbarPos(brightness_trackbar_name, "detect");
 		saturation_to_detect = getTrackbarPos(saturation_trackbar_name, "detect");
+		// trackbar에서 값을 가져옴
 
 		detect_eel(img, detect_img, brightness_to_detect, saturation_to_detect);
 		// 장어를 감지하는 함수 호출
 
 		imshow("detect", detect_img);
+		// 이미지 출력
 
 		switch (waitKeyEx(1)) // 키보드 입력
 		{
 		case 27: // esc 키 입력
 			return 0;
 			// 종료
+
 		case 2424832: // ← 키 입력
 			setTrackbarPos(brightness_trackbar_name, "detect", 
 				getTrackbarPos(brightness_trackbar_name, "detect") - 1);
 			// brightness_trackbar_name의 값 1 감소
 
 			break;
+
 		case 2555904: // → 키 입력
 			setTrackbarPos(brightness_trackbar_name, "detect", 
 				getTrackbarPos(brightness_trackbar_name, "detect") + 1);
 			// brightness_trackbar_name의 값 1 증가
 
 			break;
+
 		case 2490368: // ↑ 키 입력
 			setTrackbarPos(saturation_trackbar_name, "detect",
 				getTrackbarPos(saturation_trackbar_name, "detect") + 1);
 			// saturation_trackbar_name의 값 1 증가
 
 			break;
+
 		case 2621440: // ↓ 키 입력
 			setTrackbarPos(saturation_trackbar_name, "detect",
 				getTrackbarPos(saturation_trackbar_name, "detect") - 1);
@@ -245,7 +253,8 @@ int main()
 			break;
 		}
 
-		end_t = clock();
+		end_t = clock(); // 
+
 		cout << "실행시간:" << (double)(end_t - begin_t) / CLOCKS_PER_SEC << endl;
 	}
 	return 0;
