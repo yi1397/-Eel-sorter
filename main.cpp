@@ -65,39 +65,41 @@ void detect_eel(
 	findContours(threshold_img, contours, hierarchy, 
 		RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0));
 	// threshold의 윤곽선을 contours에 저장함
-	int size = contours.size(); // contours에 저장된 contour의 갯수를 저장하는 변수
+	int size = contours.size(); // contours에 저장된 contour의 갯수를 기억하는 변수
 	int max_contour = 0;
 	if (size) // contour가 없으면 실행하지 않음
 	{
-		int max_Area = 0;
-		for (int i = 0; i < size; i++)
+		int max_Area = 0; // 가장큰 contour의 면적을 기억하는 변수
+		for (int i = 0; i < size; i++) // contours에서 가장 면적이 큰 contour를 찾는 for문
 		{
-			if (max_Area < contourArea(contours[i]))
+			if (max_Area < contourArea(contours[i])) // 현재 contour의 면적이 max_Area보다크면
 			{
-				max_Area = contourArea(contours[i]);
-				max_contour = i;
+				max_Area = contourArea(contours[i]); // max_Area에 현재 contour의 면적을 저장
+				max_contour = i; //가장 면적이 큰 contour의 번호를 기억
 			}
 		}
-		detect_area = contourArea(contours[max_contour]);
-		double min_dist = 10e+10;
-		Point minA;
-		Point minB;
+		detect_area = contourArea(contours[max_contour]); // 가장 면적이 큰 contour의 면적을 detect_area에 저장
+		double min_dist = 10e+10; // 장어의 두께를 구하는 함수
+		Point minA, minB; // contour의 cv::Point를 저장할 변수
 		
-		for (int i = 0; i < contours[max_contour].size() >> 1; i++) //1중 for문으로 변경해야함
+		for (int i = 0; i < contours[max_contour].size() >> 1; i++) // 가장 면적이 큰 contour의 0번부터 절반까지 반복
+			// i는 가장큰 contour의 0번부터 절반까지 반복
 		{
 			for (int j = -((int)contours[max_contour].size() >>3) + 1;
 				j < ((int)contours[max_contour].size() >> 3);
 				j++)
+				// j는 0부터 가장큰 contour크기의 1/8 까지 증가
 			{
 				int k = ((i + contours[max_contour].size() / 2) + j)
 					% contours[max_contour].size();
-				double dist = calc_dist(contours[max_contour][i], 
-					contours[max_contour][k]);
-				if (dist < min_dist)
+				// k는 i의 반대지점에서 ± contour크기의 1/8 사이
+				double dist = calc_dist(contours[max_contour][i], contours[max_contour][k]); 
+				// 가장큰 contour의 i번째와 k번째 사이의 거리를 기억하는 변수
+				if (dist < min_dist) // dist가 최단거리이면
 				{
-					min_dist = dist;
-					minA = contours[max_contour][i]; 
-					minB = contours[max_contour][k];
+					min_dist = dist; // dist를 저장
+					minA = contours[max_contour][i]; minB = contours[max_contour][k];
+					// i와 k의 위치를 기억
 				}
 			}
 		}
