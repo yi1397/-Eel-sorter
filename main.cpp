@@ -2,118 +2,98 @@
 #include <iostream>
 #include <time.h> 
 #include <cmath>
-#include "Histogram1D.h"
+//#include "Histogram1D.h"
 using namespace cv;
 using namespace std;
 
-double px_to_cm_ratio = 1;
-
-/**
-void thinning(cv::Mat& img)
-{
-	cv::Mat skel(img.size(), CV_8UC1, cv::Scalar(0));
-	cv::Mat temp(img.size(), CV_8UC1);
-	cv::Mat element = cv::getStructuringElement(cv::MORPH_CROSS, cv::Size(3, 3));
-	bool done;
-	do
-	{
-		cv::morphologyEx(img, temp, cv::MORPH_OPEN, element);
-		cv::bitwise_not(temp, temp);
-		cv::bitwise_and(img, temp, temp);
-		cv::bitwise_or(skel, temp, skel);
-		cv::erode(img, img, element);
-
-		double max;
-		cv::minMaxLoc(img, 0, &max);
-		done = (max == 0);
-	} while (!done);
-	img = skel;
-}
-*/
+double px_to_cm_ratio = 1; // 1cm가 몇 픽셀인지 저장하는 변수
 
 double calc_dist(Point A, Point B)
+// cv::Point 구조체를 파라미터로 받아서 두 cv::Point의 거리를 측정하는 함수
 {
-	double dist;
-	int x_dist = A.x - B.x;
-	int y_dist = A.y - B.y;
-	dist = x_dist * x_dist + y_dist * y_dist;
-	return sqrt((double)dist);
+	double dist; 
+	int x_dist = A.x - B.x; // A와 B의 x방향 거리차이 
+	int y_dist = A.y - B.y; // A와 B의 y방향 거리차이
+	dist = x_dist * x_dist + y_dist * y_dist; // A와 B의 거리차이의 제곱의 합
+	return sqrt((double)dist); // A와 B의 거리를 return해줌
 
 }
 
 void on_trackbar(int, void*)
+// cv::createTrackbar를 위한 함수(기능 없음)
 {
 
 }
 
 void detect_eel(
-	Mat& input,
-	Mat& output,
-	int brightness,
-	int saturation
-	//Histogram1D& h
+	Mat& input, // 입력된 이미지
+	Mat& output, // 출력할 결과 이미지
+	int brightness, // 감지할 밝기 문턱값
+	int saturation // 감지할 채도 문턱값
+	//Histogram1D& h // Histogram을 이용한 장어 감지를 위한 클래스(아직 기능을 추가하지 않음)
 )
+// 장어의 길이를 감지하고 결과 이미지를 출력해주는 함수
 {
-	double length = 0;
-	double detect_area = 0;
-	Mat cam_img = input.clone();
-	Mat threshold_img(input.size(), CV_8U);
-	Mat detect(input.size(), CV_8UC3);
-	detect = Scalar(0, 0, 0);
-	Mat hsv_img;
-	cvtColor(cam_img, hsv_img, COLOR_BGR2HSV);
-	vector<Mat> channels;
-	split(hsv_img, channels);
+	double length = 0; // 장어의 길이가 기억될 변수
+	double detect_area = 0; // 장어의 면적이 기억될 변수
+	Mat cam_img = input.clone(); // input이미지를 복사함
+	Mat threshold_img(input.size(), CV_8U); // input이미지와 같은크기의 비어있는 cv::Mat 변수
+	Mat detect(input.size(), CV_8UC3); // input이미지와 같은크기의 비어있는 cv::Mat 변수
+	detect = Scalar(0, 0, 0); // detect를 검은색 이미지로 초기화
+	Mat hsv_img; // hsv형식의 색상 데이터가 저장될 cv::Mat 변수
+	cvtColor(cam_img, hsv_img, COLOR_BGR2HSV); 
+	// hsv_img변수에 cam_img의 데이터를 hsv형식으로 변환해서 저장
+
+	vector<Mat> channels; // h, s, v 데이터를 각각 저장할 vector<Mat>선언
+	split(hsv_img, channels); // channels에 h, s, v 데이터를 각각 저장함
 
 
-	uchar* fixed_data = (uchar*)threshold_img.data;
-	uchar* data_s = (uchar*)channels[1].data;
-	uchar* data_v = (uchar*)channels[2].data;
-	int data_len = channels[1].rows * channels[1].cols;
+	uchar* fixed_data = (uchar*)threshold_img.data; // threshold_img에 접근하기 위한 포인터
+	uchar* data_s = (uchar*)channels[1].data; // channels[1] (채도 데이터)에 접근하기 위한 포인터
+	uchar* data_v = (uchar*)channels[2].data; // channels[2] (밝기 데이터)에 접근하기 위한 포인터
+	int data_len = channels[1].rows * channels[1].cols; // 입력받은 이미지의 크기
 
 	for (int i = 0; i < data_len; i++)
+	// hsv데이터를 읽고 이미지에서 장어와 비슷한 색상영역을 찾아내는 for문
 	{
 		fixed_data[i] = data_s[i] < saturation || data_v[i] < brightness ? 255u : 0u;
+		//장어와 비슷한 색상 영역은 흰색, 그렇지 않은 영역은 검은색으로 저장
 	}
 
-	//Mat test = threshold_img.clone();
-	//thinning(test);
-	//imshow("test", test);
-	vector<vector<Point>> contours;
+	vector<vector<Point>> contours; // threshold_img의 윤곽선을 저장할 함수
 	vector<Vec4i> hierarchy;
 	findContours(threshold_img, contours, hierarchy, 
 		RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0));
-	int cnt = 0;
+	// threshold의 윤곽선을 contours에 저장함
+	int size = contours.size(); // contours에 저장된 contour의 갯수를 저장하는 변수
 	int max_contour = 0;
-	for (int i = 0; i < contours.size(); i++)
+	if (size) // contour가 없으면 실행하지 않음
 	{
-		cnt++;
-		if (contourArea(contours[max_contour]) < contourArea(contours[i]))
+		int max_Area = 0;
+		for (int i = 0; i < size; i++)
 		{
-			max_contour = i;
+			if (max_Area < contourArea(contours[i]))
+			{
+				max_Area = contourArea(contours[i]);
+				max_contour = i;
+			}
 		}
-		//cout << "i:" << i << endl;
-		//cout << "size:" << contours[i].size() << endl;
-	}
-	//cout << "max_contour:" << max_contour << endl;
-	if (cnt != 0)
-	{
 		detect_area = contourArea(contours[max_contour]);
 		double min_dist = 10e+10;
 		Point minA;
 		Point minB;
 		
-		for (int i = 0; i < contours[max_contour].size()/2; i++) //1중 for문으로 변경해야함
+		for (int i = 0; i < contours[max_contour].size() >> 1; i++) //1중 for문으로 변경해야함
 		{
-			for (int j = -((int)contours[max_contour].size() / 8) + 1;
-				j < ((int)contours[max_contour].size() / 8);
+			for (int j = -((int)contours[max_contour].size() >>3) + 1;
+				j < ((int)contours[max_contour].size() >> 3);
 				j++)
 			{
 				int k = ((i + contours[max_contour].size() / 2) + j)
 					% contours[max_contour].size();
 				double dist = calc_dist(contours[max_contour][i], 
 					contours[max_contour][k]);
-				if (dist < min_dist) //minA minB 제거후 삼항연산자로 대체해야함
+				if (dist < min_dist)
 				{
 					min_dist = dist;
 					minA = contours[max_contour][i]; 
@@ -121,7 +101,7 @@ void detect_eel(
 				}
 			}
 		}
-		line(detect, minA, minB, Scalar(255, 0, 0), 2);
+		line(detect, minA, minB, Scalar(255, 0, 0), 2); //제거해도 되는 라인
 		putText(detect, to_string(round(min_dist / px_to_cm_ratio * 10) / 10),
 			Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
 		length = round(detect_area / min_dist / px_to_cm_ratio);
@@ -162,13 +142,9 @@ int main()
 	}
 	string brightness_trackbar_name = "감지할밝기";
 	string saturation_trackbar_name = "감지할채도";
-	//string color_trackbar_name = "감지할색상";
-	//string color_range_trackbar_name = "색상범위";
 	namedWindow("detect", WINDOW_FREERATIO);
 	createTrackbar(brightness_trackbar_name, "detect", 0, 255, on_trackbar);
 	createTrackbar(saturation_trackbar_name, "detect", 0, 255, on_trackbar);
-	//createTrackbar(color_trackbar_name, "detect", 0, 180, on_trackbar);
-	//createTrackbar(color_range_trackbar_name, "detect", 0, 90, on_trackbar);
 	setTrackbarPos(brightness_trackbar_name, "detect", 160);
 	setTrackbarPos(saturation_trackbar_name, "detect", 160);
 	while (1)
@@ -186,8 +162,6 @@ int main()
 
 		brightness_to_detect = getTrackbarPos(brightness_trackbar_name, "detect");
 		saturation_to_detect = getTrackbarPos(saturation_trackbar_name, "detect");
-		//color_to_detect = getTrackbarPos(color_trackbar_name, "detect");
-		//color_range = getTrackbarPos(color_range_trackbar_name, "detect");
 		detect_eel(img, detect_img, brightness_to_detect, saturation_to_detect);
 		imshow("detect", detect_img);
 		switch (waitKeyEx(1))
