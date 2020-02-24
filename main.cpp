@@ -91,7 +91,7 @@ void detect_eel(
 		}
 		detect_area = contourArea(contours[max_contour]); // 가장 면적이 큰 contour의 면적을 detect_area에 저장
 
-		double min_dist = 10e+10; // 장어의 두께를 기억하는 함수
+		double min_dist = 10e+10; // 장어의 두께를 기억하는 변수
 
 		Point minA, minB; // contour의 cv::Point를 저장할 변수
 		
@@ -200,7 +200,8 @@ int main()
 		begin_t = clock(); // 시작 시간 기억
 
 		cap.read(img); // 영상을 카메라에서 읽어옴
-
+		//img = imread("test_img/a.png");
+		
 		if (img.empty())
 			//영상 인식 실패
 		{
