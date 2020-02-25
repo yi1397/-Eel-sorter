@@ -12,7 +12,7 @@ using namespace std;
 
 double px_to_cm_ratio = 21; // 1cm가 몇 픽셀인지 저장하는 변수
 
-int calc_dist(Point A, Point B)
+inline int calc_dist(Point A, Point B)
 // cv::Point 구조체를 파라미터로 받아서 두 cv::Point의 거리를 측정하는 함수
 {
 	int x_dist = A.x - B.x; // A와 B의 x방향 거리차이 
@@ -94,7 +94,7 @@ void detect_eel(
 
 		Point minA, minB; // contour의 cv::Point를 저장할 변수
 		int contour_size = (int)contours[max_contour].size();
-		for (int i = 0; i < contour_size >> 1; i++) // 가장 면적이 큰 contour의 0번부터 절반까지 반복
+		for (int i = contour_size >> 1; i; --i) // 가장 면적이 큰 contour의 1번부터 절반까지 반복
 			// i는 가장큰 contour의 0번부터 절반까지 반복
 		{
 			for (int j = -(contour_size >> 3) + 1;
@@ -102,8 +102,8 @@ void detect_eel(
 				j++)
 				// j는 contour크기의 -1/8부터 가장큰 contour크기의 1/8 까지 증가
 			{
-				int k = (i + (contour_size >> 1) + j)
-					% contour_size;
+				int k = (i + (contour_size >> 1) + j);
+				k = k < contour_size ? k : k - contour_size;
 				// k는 i의 반대지점에서 ± contour크기의 1/8 사이
 
 				double dist = calc_dist(contours[max_contour][i], contours[max_contour][k]); 
