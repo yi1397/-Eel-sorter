@@ -1,3 +1,7 @@
+#define brightness_trackbar_name "감지할밝기"
+#define saturation_trackbar_name "감지할채도"
+// trackbar의 이름
+
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <time.h> 
@@ -28,8 +32,7 @@ void on_trackbar(int, void*)
 }
 
 void detect_eel(
-	Mat& input, // 입력된 이미지
-	Mat& output, // 출력할 결과 이미지
+	Mat input, // 입력된 이미지
 	int brightness, // 감지할 밝기 문턱값
 	int saturation // 감지할 채도 문턱값
 	//Histogram1D& h // Histogram을 이용한 장어 감지를 위한 클래스(아직 기능을 추가하지 않음)
@@ -40,8 +43,6 @@ void detect_eel(
 
 	double detect_area = 0; // 장어의 면적이 기억될 변수
 
-	Mat cam_img = input.clone(); // input이미지를 복사함
-
 	Mat threshold_img(input.size(), CV_8U); // input이미지와 같은크기의 비어있는 cv::Mat 변수
 
 	Mat detect(input.size(), CV_8UC3); // input이미지와 같은크기의 비어있는 cv::Mat 변수
@@ -50,7 +51,7 @@ void detect_eel(
 
 	Mat hsv_img; // hsv형식의 색상 데이터가 저장될 cv::Mat 변수
 
-	cvtColor(cam_img, hsv_img, COLOR_BGR2HSV); 
+	cvtColor(input, hsv_img, COLOR_BGR2HSV);
 	// hsv_img변수에 cam_img의 데이터를 hsv형식으로 변환해서 저장
 
 	vector<Mat> channels; // h, s, v 데이터를 각각 저장할 vector<Mat>선언
@@ -94,17 +95,17 @@ void detect_eel(
 		double min_dist = 10e+10; // 장어의 두께를 기억하는 변수
 
 		Point minA, minB; // contour의 cv::Point를 저장할 변수
-		
-		for (int i = 0; i < contours[max_contour].size() >> 1; i++) // 가장 면적이 큰 contour의 0번부터 절반까지 반복
+		int contour_size = (int)contours[max_contour].size();
+		for (int i = 0; i < contour_size >> 1; i++) // 가장 면적이 큰 contour의 0번부터 절반까지 반복
 			// i는 가장큰 contour의 0번부터 절반까지 반복
 		{
-			for (int j = -((int)contours[max_contour].size() >>3) + 1;
-				j < ((int)contours[max_contour].size() >> 3);
+			for (int j = -(contour_size >> 3) + 1;
+				j < (contour_size >> 3);
 				j++)
-				// j는 0부터 가장큰 contour크기의 1/8 까지 증가
+				// j는 contour크기의 -1/8부터 가장큰 contour크기의 1/8 까지 증가
 			{
-				int k = ((i + contours[max_contour].size() / 2) + j)
-					% contours[max_contour].size();
+				int k = (i + (contour_size >> 1) + j)
+					% contour_size;
 				// k는 i의 반대지점에서 ± contour크기의 1/8 사이
 
 				double dist = calc_dist(contours[max_contour][i], contours[max_contour][k]); 
@@ -129,7 +130,7 @@ void detect_eel(
 		length = round(detect_area / min_dist / px_to_cm_ratio);
 		// 길이를 계산함
 
-		putText(cam_img, to_string(length),
+		putText(input, to_string(length),
 			Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(255, 0, 0), 2);
 		// 결과 이미지에 길이를 표시해줌
 
@@ -152,10 +153,12 @@ void detect_eel(
 		to_string(round(detect_area / px_to_cm_ratio / px_to_cm_ratio)), 
 		Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 255), 2);
 	// 결과 이미지에 장어의 면적을 표시해줌
-	
-	hconcat(cam_img, threshold_img, output);
-	hconcat(output, detect, output);
-	// 3개의 결과 이미지를 출력할 이미지에 저장
+
+	hconcat(threshold_img, detect, detect);
+	hconcat(input, detect, detect);
+
+	imshow("detect", detect);
+	// 이미지 출력
 }
 
 int main()
@@ -168,7 +171,6 @@ int main()
 	VideoCapture cap(0); //카메라를 불러옴
 
 	Mat img;
-	Mat detect_img;
 
 	if (!cap.isOpened())
 		//카메라 실행 실패
@@ -176,10 +178,6 @@ int main()
 		cerr << "카메라를 열 수 없음" << endl;
 		return -1;
 	}
-
-	string brightness_trackbar_name = "감지할밝기";
-	string saturation_trackbar_name = "감지할채도";
-	// trackbar의 이름
 
 	namedWindow("detect", WINDOW_FREERATIO);
 	// 출력 윈도우
@@ -199,11 +197,11 @@ int main()
 		clock_t begin_t, end_t; // 실행 시간을 기억하는 변수
 		begin_t = clock(); // 시작 시간 기억
 
-		cap.read(img); // 영상을 카메라에서 읽어옴
-		//img = imread("test_img/a.png");
+		// cap.read(img); // 영상을 카메라에서 읽어옴
+		img = imread("test_img/t.png");
 		
 		if (img.empty())
-			//영상 인식 실패
+			// 영상 인식 실패
 		{
 			cerr << "빈 영상이 캡쳐됨" << endl;
 			break;
@@ -213,11 +211,9 @@ int main()
 		saturation_to_detect = getTrackbarPos(saturation_trackbar_name, "detect");
 		// trackbar에서 값을 가져옴
 
-		detect_eel(img, detect_img, brightness_to_detect, saturation_to_detect);
+		detect_eel(img, brightness_to_detect, saturation_to_detect);
 		// 장어를 감지하는 함수 호출
 
-		imshow("detect", detect_img);
-		// 이미지 출력
 
 		switch (waitKeyEx(1)) // 키보드 입력
 		{
