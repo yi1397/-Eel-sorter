@@ -36,6 +36,7 @@ void detect_eel(
 	vector<Vec4i> hierarchy;
 	findContours(threshold_img, contours, hierarchy,
 		RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0));
+
 	int size = contours.size();
 	int max_contour = 0;
 
