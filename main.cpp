@@ -29,7 +29,7 @@ void on_trackbar(int, void*)
 }
 
 void detect_eel(
-	Mat input, // 입력된 이미지
+	Mat& input, // 입력된 이미지
 	int brightness, // 감지할 밝기 문턱값
 	int saturation // 감지할 채도 문턱값
 	//Histogram1D& h // Histogram을 이용한 장어 감지를 위한 클래스(아직 기능을 추가하지 않음)
@@ -99,14 +99,14 @@ void detect_eel(
 		{
 			for (int j = -(contour_size >> 3) + 1;
 				j < (contour_size >> 3);
-				j++)
+				++j)
 				// j는 contour크기의 -1/8부터 가장큰 contour크기의 1/8 까지 증가
 			{
 				int k = (i + (contour_size >> 1) + j);
 				k = k < contour_size ? k : k - contour_size;
 				// k는 i의 반대지점에서 ± contour크기의 1/8 사이
 
-				double dist = calc_dist(contours[max_contour][i], contours[max_contour][k]); 
+				int dist = calc_dist(contours[max_contour][i], contours[max_contour][k]); 
 				// 가장큰 contour의 i번째와 k번째 사이의 거리를 기억하는 변수
 
 				if (dist < min_dist) // dist가 최단거리이면
