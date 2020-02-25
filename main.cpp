@@ -113,7 +113,8 @@ void detect_eel(
 				{
 					min_dist = dist; // dist를 저장
 
-					minA = contours[max_contour][i]; minB = contours[max_contour][k];
+					minA = contours[max_contour][i];
+					minB = contours[max_contour][k];
 					// i와 k의 위치를 기억
 				}
 			}
