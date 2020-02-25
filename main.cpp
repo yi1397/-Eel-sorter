@@ -10,18 +10,15 @@
 using namespace cv;
 using namespace std;
 
-double px_to_cm_ratio = 1; // 1cm가 몇 픽셀인지 저장하는 변수
+double px_to_cm_ratio = 21; // 1cm가 몇 픽셀인지 저장하는 변수
 
-double calc_dist(Point A, Point B)
+int calc_dist(Point A, Point B)
 // cv::Point 구조체를 파라미터로 받아서 두 cv::Point의 거리를 측정하는 함수
 {
-	double dist; 
 	int x_dist = A.x - B.x; // A와 B의 x방향 거리차이 
 	int y_dist = A.y - B.y; // A와 B의 y방향 거리차이
 
-	dist = x_dist * x_dist + y_dist * y_dist; // A와 B의 거리차이의 제곱의 합
-
-	return sqrt((double)dist); // A와 B의 거리를 return해줌
+	return x_dist * x_dist + y_dist * y_dist; // A와 B의 거리차이의 제곱의 합을 return해줌
 
 }
 
@@ -84,13 +81,14 @@ void detect_eel(
 		int max_Area = 0; // 가장큰 contour의 면적을 기억하는 변수
 		for (int i = 0; i < size; i++) // contours에서 가장 면적이 큰 contour를 찾는 for문
 		{
-			if (max_Area < contourArea(contours[i])) // 현재 contour의 면적이 max_Area보다크면
+			int area = contourArea(contours[i]);
+			if (max_Area < area) // 현재 contour의 면적이 max_Area보다크면
 			{
-				max_Area = contourArea(contours[i]); // max_Area에 현재 contour의 면적을 저장
+				max_Area = area; // max_Area에 현재 contour의 면적을 저장
 				max_contour = i; //가장 면적이 큰 contour의 번호를 기억
 			}
 		}
-		detect_area = contourArea(contours[max_contour]); // 가장 면적이 큰 contour의 면적을 detect_area에 저장
+		detect_area = max_Area; // 가장 면적이 큰 contour의 면적을 detect_area에 저장
 
 		double min_dist = 10e+10; // 장어의 두께를 기억하는 변수
 
@@ -120,6 +118,8 @@ void detect_eel(
 				}
 			}
 		}
+		min_dist = sqrt(min_dist);
+
 		line(detect, minA, minB, Scalar(255, 0, 0), 2);
 		// 결과 이미지에 minA와 minB 사이를 표시해줌
 
