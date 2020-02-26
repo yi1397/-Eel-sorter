@@ -51,7 +51,7 @@ void detect_eel(
 	cvtColor(input, hsv_img, COLOR_BGR2HSV);
 	// hsv_img변수에 cam_img의 데이터를 hsv형식으로 변환해서 저장
 
-	vector<Mat> channels; // h, s, v 데이터를 각각 저장할 vector<Mat>선언
+	Mat channels[3]; // h, s, v 데이터를 각각 저장할 vector<Mat>선언
 	split(hsv_img, channels); // channels에 h, s, v 데이터를 각각 저장함
 
 
