@@ -79,9 +79,11 @@ void detect_eel(
 	if (size) // contour가 없으면 실행하지 않음
 	{
 		int max_Area = 0; // 가장큰 contour의 면적을 기억하는 변수
+
 		for (int i = 0; i < size; i++) // contours에서 가장 면적이 큰 contour를 찾는 for문
 		{
-			int area = contourArea(contours[i]);
+			int area = contourArea(contours[i]); // 현재 contour의 면적
+
 			if (max_Area < area) // 현재 contour의 면적이 max_Area보다크면
 			{
 				max_Area = area; // max_Area에 현재 contour의 면적을 저장
@@ -93,17 +95,19 @@ void detect_eel(
 		double min_dist = 10e+10; // 장어의 두께를 기억하는 변수
 
 		Point minA, minB; // contour의 cv::Point를 저장할 변수
-		int contour_size = (int)contours[max_contour].size();
-		for (int i = contour_size >> 1; i; --i) // 가장 면적이 큰 contour의 1번부터 절반까지 반복
+
+		int contour_count = (int)contours[max_contour].size(); // contour의 꼭지점의 개수
+
+		for (int i = contour_count >> 1; i; --i) // 가장 면적이 큰 contour의 1번부터 절반까지 반복
 			// i는 가장큰 contour의 0번부터 절반까지 반복
 		{
-			for (int j = -(contour_size >> 3) + 1;
-				j < (contour_size >> 3);
+			for (int j = -(contour_count >> 3) + 1;
+				j < (contour_count >> 3);
 				++j)
 				// j는 contour크기의 -1/8부터 가장큰 contour크기의 1/8 까지 증가
 			{
-				int k = (i + (contour_size >> 1) + j);
-				k = k < contour_size ? k : k - contour_size;
+				int k = (i + (contour_count >> 1) + j);
+				k = k < contour_count ? k : k - contour_count;
 				// k는 i의 반대지점에서 ± contour크기의 1/8 사이
 
 				int dist = calc_dist(contours[max_contour][i], contours[max_contour][k]); 
@@ -216,7 +220,7 @@ int main()
 		// 장어를 감지하는 함수 호출
 
 
-		switch (waitKeyEx(1)) // 키보드 입력
+		switch (waitKeyEx(1)) // 키보드 입력체크
 		{
 		case -1: // 키 입력 없음
 			break;
