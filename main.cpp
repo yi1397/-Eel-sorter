@@ -12,7 +12,7 @@ using namespace std;
 
 double px_to_cm_ratio = 21; // 1cm가 몇 픽셀인지 저장하는 변수
 
-inline int calc_dist(Point A, Point B)
+inline int calc_dist(Point& A, Point& B)
 // cv::Point 구조체를 파라미터로 받아서 두 cv::Point의 거리를 측정하는 함수
 {
 	int x_dist = A.x - B.x; // A와 B의 x방향 거리차이 
@@ -69,6 +69,7 @@ void detect_eel(
 
 	vector<vector<Point>> contours; // threshold_img의 윤곽선을 저장할 함수
 	vector<Vec4i> hierarchy;
+
 	findContours(threshold_img, contours, hierarchy, 
 		RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0));
 	// threshold의 윤곽선을 contours에 저장함
