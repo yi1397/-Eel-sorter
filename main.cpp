@@ -218,7 +218,7 @@ int main()
 
 		switch (waitKeyEx(1)) // 키보드 입력
 		{
-		case -1:
+		case -1: // 키 입력 없음
 			break;
 
 		case 27: // esc 키 입력
