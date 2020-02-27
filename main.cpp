@@ -8,7 +8,7 @@
 #include <cmath>
 //#include "Histogram1D.h"
 
-double px_to_cm_ratio = 21; // 1cm가 몇 픽셀인지 저장하는 변수
+float px_to_cm_ratio = 21; // 1cm가 몇 픽셀인지 저장하는 변수
 
 inline int calc_dist(cv::Point& A, cv::Point& B)
 // cv::Point 구조체를 파라미터로 받아서 두 cv::Point의 거리를 측정하는 함수
@@ -34,9 +34,9 @@ void detect_eel(
 )
 // 장어의 길이를 감지하고 결과 이미지를 출력해주는 함수
 {
-	double length = 0; // 장어의 길이가 기억될 변수
+	float length = 0; // 장어의 길이가 기억될 변수
 
-	double detect_area = 0; // 장어의 면적이 기억될 변수
+	float detect_area = 0; // 장어의 면적이 기억될 변수
 
 	cv::Mat threshold_img(input.size(), CV_8U); // input이미지와 같은크기의 비어있는 cv::Mat 변수
 
@@ -91,7 +91,7 @@ void detect_eel(
 		}
 		detect_area = max_Area; // 가장 면적이 큰 contour의 면적을 detect_area에 저장
 
-		double min_dist = 10e+10; // 장어의 두께를 기억하는 변수
+		float min_dist = 10e+10; // 장어의 두께를 기억하는 변수
 
 		cv::Point minA, minB; // contour의 cv::Point를 저장할 변수
 
@@ -130,7 +130,6 @@ void detect_eel(
 		cv::putText(detect, std::to_string(round(min_dist / px_to_cm_ratio * 10) / 10),
 			cv::Point(50, 50), cv::FONT_HERSHEY_COMPLEX, 1, cv::Scalar(0, 0, 255), 2);
 		// 결과 이미지에 두께를 표시해줌
-
 		length = round(detect_area / min_dist / px_to_cm_ratio);
 		// 길이를 계산함
 
@@ -138,7 +137,7 @@ void detect_eel(
 			cv::Point(50, 50), cv::FONT_HERSHEY_COMPLEX, 1, cv::Scalar(255, 0, 0), 2);
 		// 결과 이미지에 길이를 표시해줌
 
-		std::cout << "길이:" << detect_area / min_dist << "px" << std::endl;
+		std::cout << "길이:" << length << "cm" << std::endl;
 		// 콘솔창에 길이를 출력
 	}
 
@@ -158,9 +157,8 @@ void detect_eel(
 		cv::Point(50, 50), cv::FONT_HERSHEY_COMPLEX, 1, cv::Scalar(0, 0, 255), 2);
 	// 결과 이미지에 장어의 면적을 표시해줌
 
-	cv::hconcat(threshold_img, detect, detect);
-	cv::hconcat(input, detect, detect);
-
+	cv::imshow("threshold_img", threshold_img);
+	cv::imshow("input", input);
 	cv::imshow("detect", detect);
 	// 이미지 출력
 }
@@ -185,7 +183,7 @@ int main()
 		return -1;
 	}
 
-	cv::namedWindow("detect", cv::WINDOW_FREERATIO);
+	cv::namedWindow("detect", cv::WINDOW_NORMAL);
 	// 출력 윈도우
 
 	cv::createTrackbar(brightness_trackbar_name, "detect", 0, 255, on_trackbar);
