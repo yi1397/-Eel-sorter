@@ -170,7 +170,12 @@ int main()
 	int brightness_to_detect; // 감지할 밝기 문턱값
 	int saturation_to_detect; // 감지할 채도 문턱값
 
-	cv::VideoCapture cap(0); //카메라를 불러옴
+	cv::VideoCapture cap(1); //카메라를 불러옴
+
+	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 240);
+	cap.set(cv::CAP_PROP_FRAME_WIDTH, 320);
+	cap.set(cv::CAP_PROP_FPS, 300);
+
 
 	cv::Mat img;
 
@@ -199,8 +204,8 @@ int main()
 	{
 		begin_t = clock(); // 시작 시간 기억
 
-		// cap.read(img); // 영상을 카메라에서 읽어옴
-		img = cv::imread("test_img/t.png");
+		cap.read(img); // 영상을 카메라에서 읽어옴
+		//img = cv::imread("test_img/t.png");
 
 		if (img.empty())
 			// 영상 인식 실패
