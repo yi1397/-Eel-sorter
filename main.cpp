@@ -170,11 +170,11 @@ int main()
 	int brightness_to_detect; // 감지할 밝기 문턱값
 	int saturation_to_detect; // 감지할 채도 문턱값
 
-	cv::VideoCapture cap(1); //카메라를 불러옴
+	cv::VideoCapture cap(1 + cv::CAP_DSHOW); //카메라를 불러옴
 
-	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 240);
-	cap.set(cv::CAP_PROP_FRAME_WIDTH, 320);
-	cap.set(cv::CAP_PROP_FPS, 300);
+	//cap.set(cv::CAP_PROP_AUTO_EXPOSURE, 0.001);
+	//cap.set(cv::CAP_PROP_FRAME_HEIGHT, 240);
+	//cap.set(cv::CAP_PROP_FRAME_WIDTH, 320);
 
 
 	cv::Mat img;
