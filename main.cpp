@@ -172,11 +172,11 @@ int main()
 
 	cv::VideoCapture cap(1 + cv::CAP_DSHOW); //카메라를 불러옴
 	
-	bool bSuccess = false;
+	bool bSuccess = true;
 	double fpsWanted = 120;
-	bSuccess = cap.set(cv::CAP_PROP_FRAME_WIDTH, 640);
-	bSuccess = cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
-	bSuccess = cap.set(cv::CAP_PROP_FPS, fpsWanted);
+	bSuccess &= cap.set(cv::CAP_PROP_FRAME_WIDTH, 320);
+	bSuccess &= cap.set(cv::CAP_PROP_FRAME_HEIGHT, 240);
+	bSuccess &= cap.set(cv::CAP_PROP_FPS, fpsWanted);
 	if (!bSuccess)
 		std::cout << std::endl << fpsWanted << "is not supported" << std::endl;
 
