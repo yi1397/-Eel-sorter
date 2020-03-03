@@ -46,11 +46,11 @@ void detect_eel(
 
 	cv::Mat hsv_img; // hsv형식의 색상 데이터가 저장될 cv::Mat 변수
 
-	cvtColor(input, hsv_img, cv::COLOR_BGR2HSV);
+	cv::cvtColor(input, hsv_img, cv::COLOR_BGR2HSV);
 	// hsv_img변수에 cam_img의 데이터를 hsv형식으로 변환해서 저장
 
 	cv::Mat channels[3]; // h, s, v 데이터를 각각 저장할 vector<Mat>선언
-	split(hsv_img, channels); // channels에 h, s, v 데이터를 각각 저장함
+	cv::split(hsv_img, channels); // channels에 h, s, v 데이터를 각각 저장함
 
 
 	uchar* fixed_data = (uchar*)threshold_img.data; // threshold_img에 접근하기 위한 포인터
@@ -123,6 +123,7 @@ void detect_eel(
 			}
 		}
 		min_dist = sqrt(min_dist);
+		// 장어의 두께를 계산
 
 		cv::line(detect, minA, minB, cv::Scalar(255, 0, 0), 2);
 		// 결과 이미지에 minA와 minB 사이를 표시해줌
@@ -141,7 +142,7 @@ void detect_eel(
 		// 콘솔창에 길이를 출력
 	}
 
-	cvtColor(threshold_img, threshold_img, cv::COLOR_GRAY2BGR);
+	cv::cvtColor(threshold_img, threshold_img, cv::COLOR_GRAY2BGR);
 	// 결과 이미지를 컬러로 변환
 
 	cv::drawContours(threshold_img, contours, max_contour,
@@ -179,12 +180,12 @@ int main()
 	if (!cap.set(cv::CAP_PROP_FPS, fpsWanted)) // fps 설정
 		std::cout << fpsWanted << "is not supported" << std::endl; // 예외 메시지
 
-	cv::Mat img;
+	cv::Mat img; // 카메라 영상이 기억될 변수
 
 	clock_t begin_t, end_t; // 실행 시간을 기억하는 변수
 
 	if (!cap.isOpened())
-		//카메라 실행 실패
+		//카메라 연결 실패
 	{
 		std::cerr << "카메라를 열 수 없음" << std::endl;
 		return -1;
