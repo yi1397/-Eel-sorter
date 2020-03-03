@@ -267,8 +267,10 @@ int main()
 
 		end_t = clock(); // 실행 시간 기억
 
-		std::cout << "실행시간:" << (double)(end_t - begin_t) / CLOCKS_PER_SEC << std::endl;
+		std::cout << "실행시간:" << (float)(end_t - begin_t) / CLOCKS_PER_SEC << std::endl;
 		// 실행시간 출력
 	}
+
+	std::cout << "종료됨" << std::endl;
 	return 0;
 }
