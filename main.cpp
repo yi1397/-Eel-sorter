@@ -178,9 +178,10 @@ int main()
 
 	double fpsWanted = 120;
 	if (!cap.set(cv::CAP_PROP_FPS, fpsWanted))
-		std::cout << std::endl << fpsWanted << "is not supported" << std::endl;
+		std::cout << fpsWanted << "is not supported" << std::endl;
 
-	cap.set(cv::CAP_PROP_EXPOSURE, 0);
+	if(!cap.set(cv::CAP_PROP_EXPOSURE, -11))
+		std::cout << "노출시간 설정 실패" << std::endl;
 
 	cv::Mat img;
 
