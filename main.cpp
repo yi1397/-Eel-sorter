@@ -171,17 +171,13 @@ int main()
 	int saturation_to_detect; // 감지할 채도 문턱값
 
 	cv::VideoCapture cap(1 + cv::CAP_DSHOW); //카메라를 불러옴
-	
 
-	cap.set(cv::CAP_PROP_FRAME_WIDTH, 640);
-	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
+	cap.set(cv::CAP_PROP_FRAME_WIDTH, 640); // 카메라 영상 가로 크기 설정
+	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480); // 카메라 영상 세로 크기 설정
 
-	double fpsWanted = 120;
-	if (!cap.set(cv::CAP_PROP_FPS, fpsWanted))
-		std::cout << fpsWanted << "is not supported" << std::endl;
-
-	if(!cap.set(cv::CAP_PROP_EXPOSURE, -11))
-		std::cout << "노출시간 설정 실패" << std::endl;
+	double fpsWanted = 120; // 카메라 영상 fps 
+	if (!cap.set(cv::CAP_PROP_FPS, fpsWanted)) // fps 설정
+		std::cout << fpsWanted << "is not supported" << std::endl; // 예외 메시지
 
 	cv::Mat img;
 
