@@ -171,18 +171,7 @@ int main()
 	int brightness_to_detect; // 감지할 밝기 문턱값
 	int saturation_to_detect; // 감지할 채도 문턱값
 
-	cv::VideoCapture cap(1 + cv::CAP_DSHOW); //카메라를 불러옴
-
-	cap.set(cv::CAP_PROP_FRAME_WIDTH, 640); // 카메라 영상 가로 크기 설정
-	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480); // 카메라 영상 세로 크기 설정
-
-	double fpsWanted = 120; // 카메라 영상 fps 
-	if (!cap.set(cv::CAP_PROP_FPS, fpsWanted)) // fps 설정
-		std::cout << fpsWanted << "is not supported" << std::endl; // 예외 메시지
-
-	cv::Mat img; // 카메라 영상이 기억될 변수
-
-	clock_t begin_t, end_t; // 실행 시간을 기억하는 변수
+	cv::VideoCapture cap(0 + cv::CAP_DSHOW); //카메라를 불러옴
 
 	if (!cap.isOpened())
 		//카메라 연결 실패
@@ -190,6 +179,17 @@ int main()
 		std::cerr << "카메라를 열 수 없음" << std::endl;
 		return -1;
 	}
+
+	cap.set(cv::CAP_PROP_FRAME_WIDTH, 640); // 카메라 영상 가로 크기 설정
+	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480); // 카메라 영상 세로 크기 설정
+
+	double fpsWanted = 120; // 카메라 영상 fps 
+	if (!cap.set(cv::CAP_PROP_FPS, fpsWanted)) // fps 설정
+		std::cout << fpsWanted << " is not supported" << std::endl; // 예외 메시지
+
+	cv::Mat img; // 카메라 영상이 기억될 변수
+
+	clock_t begin_t, end_t; // 실행 시간을 기억하는 변수
 
 	cv::namedWindow("detect", cv::WINDOW_NORMAL);
 	// 출력 윈도우
