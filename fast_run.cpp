@@ -53,10 +53,8 @@ void detect_eel(
 
 	for (int i = 0; i < data_len; i++)
 		// hsv데이터를 읽고 이미지에서 장어와 비슷한 색상영역을 찾아내는 for문
-	{
 		fixed_data[i] = data_s[i] < saturation || data_v[i] < brightness ? 255u : 0u;
 		//장어와 비슷한 색상 영역은 255u, 그렇지 않은 영역은 0u으로 저장
-	}
 
 	std::vector<std::vector<cv::Point>> contours; // threshold_img의 윤곽선을 저장할 벡터
 	std::vector<cv::Vec4i> hierarchy;
@@ -125,9 +123,7 @@ int main()
 	cap.set(cv::CAP_PROP_FRAME_WIDTH, 640); // 카메라 영상 가로 크기 설정
 	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480); // 카메라 영상 세로 크기 설정
 
-	double fpsWanted = 120; // 카메라 영상 fps 
-	if (!cap.set(cv::CAP_PROP_FPS, fpsWanted)) // fps 설정
-		std::cout << fpsWanted << "is not supported" << std::endl; // 예외 메시지
+	cap.set(cv::CAP_PROP_FPS, 120);
 
 
 	while (1)
