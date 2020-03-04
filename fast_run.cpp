@@ -135,8 +135,8 @@ int main()
 	{
 		begin_t = clock(); // 시작 시간 기억
 
-		// cap.read(img); // 영상을 카메라에서 읽어옴
-		img = cv::imread("test_img/t.png");
+		cap.read(img); // 영상을 카메라에서 읽어옴
+		//img = cv::imread("test_img/t.png");
 
 		if (img.empty())
 			// 영상 인식 실패
