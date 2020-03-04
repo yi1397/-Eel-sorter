@@ -116,18 +116,19 @@ int main()
 {
 	//Histogram1D h; // Histogram을 이용한 장어 감지를 위한 클래스(아직 기능을 추가하지 않음)
 
-	cv::VideoCapture cap(0); //카메라를 불러옴
+	cv::VideoCapture cap(1 + cv::CAP_DSHOW); //카메라를 불러옴
 
 	cv::Mat img;
 
 	clock_t begin_t, end_t; // 실행 시간을 기억하는 변수
 
-	if (!cap.isOpened())
-		//카메라 실행 실패
-	{
-		std::cerr << "카메라를 열 수 없음" << std::endl;
-		return -1;
-	}
+	cap.set(cv::CAP_PROP_FRAME_WIDTH, 640); // 카메라 영상 가로 크기 설정
+	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480); // 카메라 영상 세로 크기 설정
+
+	double fpsWanted = 120; // 카메라 영상 fps 
+	if (!cap.set(cv::CAP_PROP_FPS, fpsWanted)) // fps 설정
+		std::cout << fpsWanted << "is not supported" << std::endl; // 예외 메시지
+
 
 	while (1)
 		// 반복
@@ -150,7 +151,7 @@ int main()
 
 		end_t = clock(); // 실행 시간 기억
 
-		std::cout << "실행시간:" << (double)(end_t - begin_t) / CLOCKS_PER_SEC << std::endl;
+		std::cout << "실행시간:" << (float)(end_t - begin_t) / CLOCKS_PER_SEC << std::endl;
 		// 실행시간 출력
 	}
 	return 0;
