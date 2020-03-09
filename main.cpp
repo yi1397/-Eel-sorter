@@ -56,9 +56,9 @@ void detect_eel(
 	uchar* fixed_data = (uchar*)threshold_img.data; // threshold_img에 접근하기 위한 포인터
 	uchar* data_s = (uchar*)channels[1].data; // channels[1] (채도 데이터)에 접근하기 위한 포인터
 	uchar* data_v = (uchar*)channels[2].data; // channels[2] (밝기 데이터)에 접근하기 위한 포인터
-	int data_len = channels[1].rows * channels[1].cols; // 입력받은 이미지의 크기
+	int data_len = input.rows * input.cols; // 입력받은 이미지의 크기
 
-	for (int i = 0; i < data_len; i++)
+	for (int i = data_len; i--;)
 		// hsv데이터를 읽고 이미지에서 장어와 비슷한 색상영역을 찾아내는 for문
 	{
 		fixed_data[i] = data_s[i] < saturation || data_v[i] < brightness ? 255u : 0u;
@@ -131,6 +131,7 @@ void detect_eel(
 		cv::putText(detect, std::to_string(round(min_dist / px_to_cm_ratio * 10) / 10),
 			cv::Point(50, 50), cv::FONT_HERSHEY_COMPLEX, 1, cv::Scalar(0, 0, 255), 2);
 		// 결과 이미지에 두께를 표시해줌
+
 		length = round(detect_area / min_dist / px_to_cm_ratio);
 		// 길이를 계산함
 
@@ -180,8 +181,8 @@ int main()
 		return -1;
 	}
 
-	cap.set(cv::CAP_PROP_FRAME_WIDTH, 640); // 카메라 영상 가로 크기 설정
-	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480); // 카메라 영상 세로 크기 설정
+	cap.set(cv::CAP_PROP_FRAME_WIDTH, 320); // 카메라 영상 가로 크기 설정
+	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 240); // 카메라 영상 세로 크기 설정
 
 	double fpsWanted = 120; // 카메라 영상 fps 
 	if (!cap.set(cv::CAP_PROP_FPS, fpsWanted)) // fps 설정
