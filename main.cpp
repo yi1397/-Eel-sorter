@@ -44,12 +44,12 @@ void detect_eel(
 
 	detect = cv::Scalar(0, 0, 0); // detect를 검은색 이미지로 초기화
 
-	cv::Mat hsv_img; // hsv형식의 색상 데이터가 저장될 cv::Mat 변수
+	static cv::Mat hsv_img; // hsv형식의 색상 데이터가 저장될 cv::Mat 변수
 
 	cv::cvtColor(input, hsv_img, cv::COLOR_BGR2HSV);
 	// hsv_img변수에 cam_img의 데이터를 hsv형식으로 변환해서 저장
 
-	cv::Mat channels[3]; // h, s, v 데이터를 각각 저장할 vector<Mat>선언
+	static cv::Mat channels[3]; // h, s, v 데이터를 각각 저장할 vector<Mat>선언
 	cv::split(hsv_img, channels); // channels에 h, s, v 데이터를 각각 저장함
 
 
@@ -172,7 +172,7 @@ int main()
 	int brightness_to_detect; // 감지할 밝기 문턱값
 	int saturation_to_detect; // 감지할 채도 문턱값
 
-	cv::VideoCapture cap(0 + cv::CAP_DSHOW); //카메라를 불러옴
+	cv::VideoCapture cap(1 + cv::CAP_DSHOW); //카메라를 불러옴
 
 	if (!cap.isOpened())
 		//카메라 연결 실패
