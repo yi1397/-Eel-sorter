@@ -38,6 +38,7 @@
 
 		cv::Mat threshold_img(input.size(), CV_8U); // input이미지와 같은크기의 비어있는 cv::Mat 변수
 
+		cv::medianBlur(input, input, 3);
 
 		cvtColor(input, input, cv::COLOR_BGR2HSV);
 		// hsv_img변수에 cam_img의 데이터를 hsv형식으로 변환해서 저장
