@@ -180,8 +180,8 @@ int main()
 		return -1;
 	}
 
-	cap.set(cv::CAP_PROP_FRAME_WIDTH, 320); // 카메라 영상 가로 크기 설정
-	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 240); // 카메라 영상 세로 크기 설정
+	cap.set(cv::CAP_PROP_FRAME_WIDTH, 640); // 카메라 영상 가로 크기 설정
+	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480); // 카메라 영상 세로 크기 설정
 
 	double fpsWanted = 120; // 카메라 영상 fps 
 	if (!cap.set(cv::CAP_PROP_FPS, fpsWanted)) // fps 설정
@@ -211,9 +211,9 @@ int main()
 		//img = cv::imread("test_img/t.png");
 
 		if (img.empty())
-			// 영상 인식 실패
+			// 영상 인식 실패(카메라 연결 끊김)
 		{
-			std::cerr << "빈 영상이 캡쳐됨" << std::endl;
+			std::cerr << "카메라 연결 끊김" << std::endl;
 			break;
 		}
 
