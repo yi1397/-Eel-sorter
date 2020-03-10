@@ -77,19 +77,16 @@ void detect_eel(
 
 	if (size) // contour가 없으면 실행하지 않음
 	{
-		int max_Area = 0; // 가장큰 contour의 면적을 기억하는 변수
-
 		for (int i = 0; i < size; i++) // contours에서 가장 면적이 큰 contour를 찾는 for문
 		{
-			int area = cv::contourArea(contours[i]); // 현재 contour의 면적
+			double area = cv::contourArea(contours[i]); // 현재 contour의 면적
 
-			if (max_Area < area) // 현재 contour의 면적이 max_Area보다크면
+			if (detect_area < area) // 현재 contour의 면적이 max_Area보다크면
 			{
-				max_Area = area; // max_Area에 현재 contour의 면적을 저장
+				detect_area = area; // max_Area에 현재 contour의 면적을 저장
 				max_contour = i; //가장 면적이 큰 contour의 번호를 기억
 			}
 		}
-		detect_area = max_Area; // 가장 면적이 큰 contour의 면적을 detect_area에 저장
 
 		float min_dist = 10e+10; // 장어의 두께를 기억하는 변수
 
