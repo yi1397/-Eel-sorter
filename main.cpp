@@ -166,6 +166,9 @@ void detect_eel(
 
 int main()
 {
+	cv::Mat cameraMatrix = cv::Mat::eye(3, 3, CV_64FC1); 
+	cv::Mat distCoeffs = cv::Mat::zeros(1, 5, CV_64FC1);;
+
 	//Histogram1D h; // Histogram을 이용한 장어 감지를 위한 클래스(아직 기능을 추가하지 않음)
 
 	int brightness_to_detect; // 감지할 밝기 문턱값
