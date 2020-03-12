@@ -179,6 +179,7 @@ int main()
 
 	cameraMatrix = (cv::Mat1d(3, 3) << 1300.815, 0., 657.715, 0., 1109.265, 404.564, 0., 0., 1.);
 	distCoeffs = (cv::Mat1d(1, 4) << -0.427597, 0.158304, 0.002422, 0.000065);
+	// 카메라 캘리브레이션을 위한 데이터
 
 	int brightness_to_detect; // 감지할 밝기 문턱값
 	int saturation_to_detect; // 감지할 채도 문턱값
@@ -228,9 +229,14 @@ int main()
 			std::cerr << "카메라 연결 끊김" << std::endl;
 			break;
 		}
-		cv::Mat temp;
-		cv::undistort(img, temp, cameraMatrix, distCoeffs);
-		img = temp;
+
+		{
+			cv::Mat temp;
+			cv::undistort(img, temp, cameraMatrix, distCoeffs);
+			img = temp;
+		}
+
+
 		brightness_to_detect = cv::getTrackbarPos(brightness_trackbar_name, "detect");
 		saturation_to_detect = cv::getTrackbarPos(saturation_trackbar_name, "detect");
 		// trackbar에서 값을 가져옴
