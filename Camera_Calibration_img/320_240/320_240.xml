@@ -1,0 +1,206 @@
+<?xml version="1.0" standalone="yes"?>
+<CalibrationProject>
+  <xs:schema id="CalibrationProject" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="CalibrationProject" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="ObjWidth" type="xs:int" minOccurs="0" />
+                <xs:element name="ObjHeight" type="xs:int" minOccurs="0" />
+                <xs:element name="FieldSize" type="xs:double" minOccurs="0" />
+                <xs:element name="DetectionMethod" type="xs:int" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="images">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="ImagePath" type="xs:string" minOccurs="0" />
+                <xs:element name="SourceType" type="xs:int" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="results">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="ImageCount" type="xs:int" minOccurs="0" />
+                <xs:element name="focus_lenX" type="xs:double" minOccurs="0" />
+                <xs:element name="focus_lenY" type="xs:double" minOccurs="0" />
+                <xs:element name="PrincipalX" type="xs:double" minOccurs="0" />
+                <xs:element name="PrincipalY" type="xs:double" minOccurs="0" />
+                <xs:element name="Dist1" type="xs:double" minOccurs="0" />
+                <xs:element name="Dist2" type="xs:double" minOccurs="0" />
+                <xs:element name="Dist3" type="xs:double" minOccurs="0" />
+                <xs:element name="Dist4" type="xs:double" minOccurs="0" />
+                <xs:element name="focus_lenX_er" type="xs:double" minOccurs="0" />
+                <xs:element name="focus_lenY_er" type="xs:double" minOccurs="0" />
+                <xs:element name="PrincipalX_er" type="xs:double" minOccurs="0" />
+                <xs:element name="PrincipalY_er" type="xs:double" minOccurs="0" />
+                <xs:element name="Dist1_er" type="xs:double" minOccurs="0" />
+                <xs:element name="Dist2_er" type="xs:double" minOccurs="0" />
+                <xs:element name="Dist3_er" type="xs:double" minOccurs="0" />
+                <xs:element name="Dist4_er" type="xs:double" minOccurs="0" />
+                <xs:element name="dc_AllImage_errX" type="xs:double" minOccurs="0" />
+                <xs:element name="dc_AllImage_errY" type="xs:double" minOccurs="0" />
+                <xs:element name="Calib_Date" type="xs:string" minOccurs="0" />
+                <xs:element name="Calib_Type" type="xs:int" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <data>
+    <ObjWidth>6</ObjWidth>
+    <ObjHeight>7</ObjHeight>
+    <FieldSize>28</FieldSize>
+    <DetectionMethod>3</DetectionMethod>
+  </data>
+  <images>
+    <ImagePath>D:\공부\OpenCV_CPP\eel_classification\Camera_Calibration_img\320_240\WIN_20200312_17_04_09_Pro.jpg</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>D:\공부\OpenCV_CPP\eel_classification\Camera_Calibration_img\320_240\WIN_20200312_17_04_14_Pro.jpg</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>D:\공부\OpenCV_CPP\eel_classification\Camera_Calibration_img\320_240\WIN_20200312_17_04_19_Pro.jpg</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>D:\공부\OpenCV_CPP\eel_classification\Camera_Calibration_img\320_240\WIN_20200312_17_04_22_Pro.jpg</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>D:\공부\OpenCV_CPP\eel_classification\Camera_Calibration_img\320_240\WIN_20200312_17_04_28_Pro.jpg</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>D:\공부\OpenCV_CPP\eel_classification\Camera_Calibration_img\320_240\WIN_20200312_17_08_49_Pro.jpg</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>D:\공부\OpenCV_CPP\eel_classification\Camera_Calibration_img\320_240\WIN_20200312_17_09_13_Pro.jpg</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>D:\공부\OpenCV_CPP\eel_classification\Camera_Calibration_img\320_240\WIN_20200312_17_09_43_Pro.jpg</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>D:\공부\OpenCV_CPP\eel_classification\Camera_Calibration_img\320_240\WIN_20200312_17_09_46_Pro.jpg</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>D:\공부\OpenCV_CPP\eel_classification\Camera_Calibration_img\320_240\WIN_20200312_17_09_48_Pro.jpg</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>D:\공부\OpenCV_CPP\eel_classification\Camera_Calibration_img\320_240\WIN_20200312_17_09_51_Pro.jpg</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>D:\공부\OpenCV_CPP\eel_classification\Camera_Calibration_img\320_240\WIN_20200312_17_09_55_Pro.jpg</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <images>
+    <ImagePath>D:\공부\OpenCV_CPP\eel_classification\Camera_Calibration_img\320_240\WIN_20200312_17_09_57_Pro.jpg</ImagePath>
+    <SourceType>0</SourceType>
+  </images>
+  <results>
+    <ImageCount>10</ImageCount>
+    <focus_lenX>1300.8150739260595</focus_lenX>
+    <focus_lenY>1109.2653988528059</focus_lenY>
+    <PrincipalX>657.71477418003781</PrincipalX>
+    <PrincipalY>404.56444885530118</PrincipalY>
+    <Dist1>-0.42759644082992315</Dist1>
+    <Dist2>0.15830186170688779</Dist2>
+    <Dist3>0.0024221945013541977</Dist3>
+    <Dist4>6.5220729150904981E-05</Dist4>
+    <focus_lenX_er>1.88663911819458</focus_lenX_er>
+    <focus_lenY_er>1.7931287288665772</focus_lenY_er>
+    <PrincipalX_er>3.7919423580169678</PrincipalX_er>
+    <PrincipalY_er>2.9039742946624756</PrincipalY_er>
+    <Dist1_er>0.017251469194889069</Dist1_er>
+    <Dist2_er>0.23949143290519714</Dist2_er>
+    <Dist3_er>0.00061424815794453025</Dist3_er>
+    <Dist4_er>0.00043470380478538573</Dist4_er>
+    <dc_AllImage_errX>0.24210497743101322</dc_AllImage_errX>
+    <dc_AllImage_errY>0.24783828996618065</dc_AllImage_errY>
+    <Calib_Date>2020-03-12 오후 3:35:02</Calib_Date>
+    <Calib_Type>2</Calib_Type>
+  </results>
+  <results>
+    <ImageCount>10</ImageCount>
+    <focus_lenX>1300.8150739260595</focus_lenX>
+    <focus_lenY>1109.2653988528059</focus_lenY>
+    <PrincipalX>657.71477418003781</PrincipalX>
+    <PrincipalY>404.56444885530118</PrincipalY>
+    <Dist1>-0.42759644082992304</Dist1>
+    <Dist2>0.15830186170688687</Dist2>
+    <Dist3>0.002422194501354202</Dist3>
+    <Dist4>6.5220729150904181E-05</Dist4>
+    <focus_lenX_er>0</focus_lenX_er>
+    <focus_lenY_er>0</focus_lenY_er>
+    <PrincipalX_er>0</PrincipalX_er>
+    <PrincipalY_er>0</PrincipalY_er>
+    <Dist1_er>0</Dist1_er>
+    <Dist2_er>0</Dist2_er>
+    <Dist3_er>0</Dist3_er>
+    <Dist4_er>0</Dist4_er>
+    <dc_AllImage_errX>0.24210497743101322</dc_AllImage_errX>
+    <dc_AllImage_errY>0.24783828996618065</dc_AllImage_errY>
+    <Calib_Date>2020-03-12 오후 3:36:36</Calib_Date>
+    <Calib_Type>0</Calib_Type>
+  </results>
+  <results>
+    <ImageCount>10</ImageCount>
+    <focus_lenX>1300.8150062602902</focus_lenX>
+    <focus_lenY>1109.2653743201763</focus_lenY>
+    <PrincipalX>657.71551614234761</PrincipalX>
+    <PrincipalY>404.56504132922828</PrincipalY>
+    <Dist1>-0.42759670892332396</Dist1>
+    <Dist2>0.15830395426776456</Dist2>
+    <Dist3>0.0024221105224308359</Dist3>
+    <Dist4>6.5179444565602546E-05</Dist4>
+    <focus_lenX_er>1.8704987764358521</focus_lenX_er>
+    <focus_lenY_er>1.7837367057800293</focus_lenY_er>
+    <PrincipalX_er>3.7904789447784424</PrincipalX_er>
+    <PrincipalY_er>2.9025416374206543</PrincipalY_er>
+    <Dist1_er>0.0076070493087172508</Dist1_er>
+    <Dist2_er>0.044871948659420013</Dist2_er>
+    <Dist3_er>0.00061237596673890948</Dist3_er>
+    <Dist4_er>0.00043433331302367151</Dist4_er>
+    <dc_AllImage_errX>0.24210477045241735</dc_AllImage_errX>
+    <dc_AllImage_errY>0.24783849239732547</dc_AllImage_errY>
+    <Calib_Date>2020-03-12 오후 3:45:15</Calib_Date>
+    <Calib_Type>1</Calib_Type>
+  </results>
+  <results>
+    <ImageCount>11</ImageCount>
+    <focus_lenX>327.49497897139474</focus_lenX>
+    <focus_lenY>342.60829614018047</focus_lenY>
+    <PrincipalX>170.23081228767717</PrincipalX>
+    <PrincipalY>120.34067227847525</PrincipalY>
+    <Dist1>-0.4474342735184817</Dist1>
+    <Dist2>0.23129492117929795</Dist2>
+    <Dist3>0.000753833911001083</Dist3>
+    <Dist4>-0.0013247641207805288</Dist4>
+    <focus_lenX_er>0</focus_lenX_er>
+    <focus_lenY_er>0</focus_lenY_er>
+    <PrincipalX_er>0</PrincipalX_er>
+    <PrincipalY_er>0</PrincipalY_er>
+    <Dist1_er>0</Dist1_er>
+    <Dist2_er>0</Dist2_er>
+    <Dist3_er>0</Dist3_er>
+    <Dist4_er>0</Dist4_er>
+    <dc_AllImage_errX>52.945728094731606</dc_AllImage_errX>
+    <dc_AllImage_errY>39.647795975064128</dc_AllImage_errY>
+    <Calib_Date>2020-03-12 오후 5:14:43</Calib_Date>
+    <Calib_Type>0</Calib_Type>
+  </results>
+</CalibrationProject>
