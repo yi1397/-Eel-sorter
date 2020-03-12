@@ -177,8 +177,13 @@ int main()
 	cv::Mat cameraMatrix = cv::Mat::eye(3, 3, CV_64FC1);
 	cv::Mat distCoeffs = cv::Mat::zeros(1, 5, CV_64FC1);;
 
-	cameraMatrix = (cv::Mat1d(3, 3) << 1300.815, 0., 657.715, 0., 1109.265, 404.564, 0., 0., 1.);
-	distCoeffs = (cv::Mat1d(1, 4) << -0.427597, 0.158304, 0.002422, 0.000065);
+	/* // 320*240
+	cameraMatrix = (cv::Mat1d(3, 3) << 327.495, 0, 170.231, 0, 342.608, 120.341, 0, 0, 1);
+	distCoeffs = (cv::Mat1d(1, 4) << -0.447434, 0.231295, 0.000754, -0.001325);
+	*/
+
+	cameraMatrix = (cv::Mat1d(3, 3) << 327.495, 0, 170.231, 0, 342.608, 120.341, 0, 0, 1);
+	distCoeffs = (cv::Mat1d(1, 4) << -0.447434, 0.231295, 0.000754, -0.001325);
 	// 카메라 캘리브레이션을 위한 데이터
 
 	int brightness_to_detect; // 감지할 밝기 문턱값
