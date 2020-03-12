@@ -7,4 +7,5 @@
 하드웨어 : 라즈베리파이B4 2GB
 
 ## 스크린샷
+2020년 2월 12일 
 ![result](./screenshot/result.PNG)
