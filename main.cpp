@@ -2,13 +2,16 @@
 #define saturation_trackbar_name "감지할채도"
 // trackbar의 이름
 
+
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <time.h> 
 #include <cmath>
 //#include "Histogram1D.h"
 
+
 float px_to_cm_ratio = 21; // 1cm가 몇 픽셀인지 저장하는 변수
+
 
 inline int calc_dist(cv::Point& A, cv::Point& B)
 // cv::Point 구조체를 파라미터로 받아서 두 cv::Point의 거리를 측정하는 함수
@@ -20,11 +23,13 @@ inline int calc_dist(cv::Point& A, cv::Point& B)
 
 }
 
+
 void on_trackbar(int, void*)
 // cv::createTrackbar를 위한 함수(기능 없음)
 {
 
 }
+
 
 void detect_eel(
 	cv::Mat& input, // 입력된 이미지
@@ -164,16 +169,16 @@ void detect_eel(
 	// 이미지 출력
 }
 
+
 int main()
 {
-	cv::Mat cameraMatrix = cv::Mat::eye(3, 3, CV_64FC1); 
+	//Histogram1D h; // Histogram을 이용한 장어 감지를 위한 클래스(아직 기능을 추가하지 않음)
+
+	cv::Mat cameraMatrix = cv::Mat::eye(3, 3, CV_64FC1);
 	cv::Mat distCoeffs = cv::Mat::zeros(1, 5, CV_64FC1);;
 
 	cameraMatrix = (cv::Mat1d(3, 3) << 1300.815, 0., 657.715, 0., 1109.265, 404.564, 0., 0., 1.);
 	distCoeffs = (cv::Mat1d(1, 4) << -0.427597, 0.158304, 0.002422, 0.000065);
-
-
-	//Histogram1D h; // Histogram을 이용한 장어 감지를 위한 클래스(아직 기능을 추가하지 않음)
 
 	int brightness_to_detect; // 감지할 밝기 문턱값
 	int saturation_to_detect; // 감지할 채도 문턱값
