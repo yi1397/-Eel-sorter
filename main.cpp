@@ -1,7 +1,7 @@
+#define CAM_MODE CAM_320_240
+
 #define CAM_320_240 320640
 #define CAM_640_480 640480
-
-#define CAM_MODE CAM_320_240 
 
 #define brightness_trackbar_name "감지할밝기"
 #define saturation_trackbar_name "감지할채도"
@@ -189,6 +189,8 @@ int main()
 #if CAM_MODE == CAM_320_240
 	// 320*240
 
+	std::cout << "CAM_MODE is 320*240" << std::endl;
+
 	cv::Mat cameraMatrix = cv::Mat::eye(3, 3, CV_64FC1);
 	cv::Mat distCoeffs = cv::Mat::zeros(1, 5, CV_64FC1);;
 
@@ -202,6 +204,8 @@ int main()
 #elif CAM_MODE == CAM_640_480
 	// 640*480
 
+	std::cout << "CAM_MODE is 640*480" << std::endl;
+
 	cv::Mat cameraMatrix = cv::Mat::eye(3, 3, CV_64FC1);
 	cv::Mat distCoeffs = cv::Mat::zeros(1, 5, CV_64FC1);;
 
@@ -213,7 +217,9 @@ int main()
 	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480); // 카메라 영상 세로 크기 설정
 
 #else
+	std::cout << "This CAM_MODE is not supported" << std::endl;
 	return 0;
+
 #endif
 
 
@@ -222,7 +228,7 @@ int main()
 
 	double fpsWanted = 120; // 카메라 영상 fps 
 	if (!cap.set(cv::CAP_PROP_FPS, fpsWanted)) // fps 설정
-		std::cout << fpsWanted << " is not supported" << std::endl; // 예외 메시지
+		std::cout << fpsWanted << "fps is not supported" << std::endl; // 예외 메시지
 
 	cv::Mat img; // 카메라 영상이 기억될 변수
 
