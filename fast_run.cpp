@@ -112,6 +112,20 @@
 	{
 		//Histogram1D h; // Histogram을 이용한 장어 감지를 위한 클래스(아직 기능을 추가하지 않음)
 
+		cv::Mat cameraMatrix = cv::Mat::eye(3, 3, CV_64FC1);
+		cv::Mat distCoeffs = cv::Mat::zeros(1, 5, CV_64FC1);;
+
+		/* // 320*240
+		cameraMatrix = (cv::Mat1d(3, 3) << 327.495, 0, 170.231, 0, 342.608, 120.341, 0, 0, 1);
+		distCoeffs = (cv::Mat1d(1, 4) << -0.447434, 0.231295, 0.000754, -0.001325);
+		// 카메라 캘리브레이션을 위한 데이터
+		*/
+
+		// 640*480
+		cameraMatrix = (cv::Mat1d(3, 3) << 652.551, 0, 333.847, 0, 641.968, 234.218, 0, 0, 1);
+		distCoeffs = (cv::Mat1d(1, 4) << -0.444277, 0.253481, 0.001623, 0.000861);
+		// 카메라 캘리브레이션을 위한 데이터
+
 		cv::VideoCapture cap(1 + cv::CAP_DSHOW); //카메라를 불러옴
 
 		cv::Mat img;
@@ -133,10 +147,16 @@
 			//img = cv::imread("test_img/t.png");
 
 			if (img.empty())
-				// 영상 인식 실패
+				// 영상 인식 실패(카메라 연결 끊김)
 			{
-				std::cerr << "빈 영상이 캡쳐됨" << std::endl;
+				std::cerr << "카메라 연결 끊김" << std::endl;
 				break;
+			}
+
+			{
+				cv::Mat temp;
+				cv::undistort(img, temp, cameraMatrix, distCoeffs);
+				img = temp;
 			}
 
 			detect_eel(img,	160, 160);
