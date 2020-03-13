@@ -1,3 +1,8 @@
+#define CAM_320_240 320640
+#define CAM_640_480 640480
+
+#define CAM_MODE CAM_320_240 
+
 #define brightness_trackbar_name "감지할밝기"
 #define saturation_trackbar_name "감지할채도"
 // trackbar의 이름
@@ -8,7 +13,6 @@
 #include <time.h> 
 #include <cmath>
 //#include "Histogram1D.h"
-
 
 float px_to_cm_ratio = 21; // 1cm가 몇 픽셀인지 저장하는 변수
 
@@ -22,7 +26,6 @@ inline int calc_dist(cv::Point& A, cv::Point& B)
 	return x_dist * x_dist + y_dist * y_dist; // A와 B의 거리차이의 제곱의 합을 return해줌
 
 }
-
 
 void on_trackbar(int, void*)
 // cv::createTrackbar를 위한 함수(기능 없음)
@@ -172,25 +175,6 @@ void detect_eel(
 
 int main()
 {
-	//Histogram1D h; // Histogram을 이용한 장어 감지를 위한 클래스(아직 기능을 추가하지 않음)
-
-	cv::Mat cameraMatrix = cv::Mat::eye(3, 3, CV_64FC1);
-	cv::Mat distCoeffs = cv::Mat::zeros(1, 5, CV_64FC1);;
-
-	/* // 320*240
-	cameraMatrix = (cv::Mat1d(3, 3) << 327.495, 0, 170.231, 0, 342.608, 120.341, 0, 0, 1);
-	distCoeffs = (cv::Mat1d(1, 4) << -0.447434, 0.231295, 0.000754, -0.001325);
-	// 카메라 캘리브레이션을 위한 데이터
-	*/
-
-	// 640*480
-	cameraMatrix = (cv::Mat1d(3, 3) << 652.551, 0, 333.847, 0, 641.968, 234.218, 0, 0, 1);
-	distCoeffs = (cv::Mat1d(1, 4) << -0.444277, 0.253481, 0.001623, 0.000861);
-	// 카메라 캘리브레이션을 위한 데이터
-
-	int brightness_to_detect; // 감지할 밝기 문턱값
-	int saturation_to_detect; // 감지할 채도 문턱값
-
 	cv::VideoCapture cap(1 + cv::CAP_DSHOW); //카메라를 불러옴
 
 	if (!cap.isOpened())
@@ -200,8 +184,41 @@ int main()
 		return -1;
 	}
 
+	//Histogram1D h; // Histogram을 이용한 장어 감지를 위한 클래스(아직 기능을 추가하지 않음)
+
+#if CAM_MODE == CAM_320_240
+	// 320*240
+
+	cv::Mat cameraMatrix = cv::Mat::eye(3, 3, CV_64FC1);
+	cv::Mat distCoeffs = cv::Mat::zeros(1, 5, CV_64FC1);;
+
+	cameraMatrix = (cv::Mat1d(3, 3) << 327.495, 0, 170.231, 0, 342.608, 120.341, 0, 0, 1);
+	distCoeffs = (cv::Mat1d(1, 4) << -0.447434, 0.231295, 0.000754, -0.001325);
+	// 카메라 캘리브레이션을 위한 데이터
+
+	cap.set(cv::CAP_PROP_FRAME_WIDTH, 320); // 카메라 영상 가로 크기 설정
+	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 240); // 카메라 영상 세로 크기 설정
+
+#elif CAM_MODE == CAM_640_480
+	// 640*480
+
+	cv::Mat cameraMatrix = cv::Mat::eye(3, 3, CV_64FC1);
+	cv::Mat distCoeffs = cv::Mat::zeros(1, 5, CV_64FC1);;
+
+	cameraMatrix = (cv::Mat1d(3, 3) << 652.551, 0, 333.847, 0, 641.968, 234.218, 0, 0, 1);
+	distCoeffs = (cv::Mat1d(1, 4) << -0.444277, 0.253481, 0.001623, 0.000861);
+	// 카메라 캘리브레이션을 위한 데이터
+
 	cap.set(cv::CAP_PROP_FRAME_WIDTH, 640); // 카메라 영상 가로 크기 설정
 	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480); // 카메라 영상 세로 크기 설정
+
+#else
+	return 0;
+#endif
+
+
+	int brightness_to_detect; // 감지할 밝기 문턱값
+	int saturation_to_detect; // 감지할 채도 문턱값
 
 	double fpsWanted = 120; // 카메라 영상 fps 
 	if (!cap.set(cv::CAP_PROP_FPS, fpsWanted)) // fps 설정
@@ -293,7 +310,6 @@ int main()
 		}
 
 		end_t = clock(); // 실행 시간 기억
-
 		std::cout << "실행시간:" << (float)(end_t - begin_t) << std::endl;
 		// 실행시간 출력
 	}
