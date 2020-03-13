@@ -158,8 +158,8 @@ int main()
 	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480); // 카메라 영상 세로 크기 설정
 
 #else
-	std::cout << "This CAM_MODE is not supported" << std::endl;
-	return 0;
+	std::cerr << "This CAM_MODE is not supported" << std::endl;
+	return -1;
 
 #endif
 
@@ -182,7 +182,7 @@ int main()
 			// 영상 인식 실패(카메라 연결 끊김)
 		{
 			std::cerr << "카메라 연결 끊김" << std::endl;
-			break;
+			return -1;
 		}
 
 		{
