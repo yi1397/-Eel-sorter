@@ -1,6 +1,6 @@
 #define CAM_MODE NO_CAM_TEST
 
-#define NO_USE_CAM 0
+#define NO_CAM_TEST 0
 #define CAM_320_240 320640
 #define CAM_640_480 640480
 
@@ -180,11 +180,12 @@ int main()
 
 	//Histogram1D h; // Histogram을 이용한 장어 감지를 위한 클래스(아직 기능을 추가하지 않음)
 
-#if CAP_MODE == NO_USE_CAM
+#if CAP_MODE == NO_CAM_TEST
 #pragma message("NO_USE_CAM")
 	// 카메라 사용안함
 
 #else
+#pragma message("USE_CAM")
 	//카메라 사용 
 
 	cv::VideoCapture cap(1 + cv::CAP_DSHOW); //카메라를 불러옴
@@ -231,6 +232,7 @@ int main()
 #else
 #pragma message("This CAM_MODE is not supported")
 	// 정의되지않은 카메라 모드
+
 	std::cerr << "This CAM_MODE is not supported" << std::endl;
 	return -1;
 
@@ -243,7 +245,9 @@ int main()
 	int saturation_to_detect; // 감지할 채도 문턱값
 
 
-#if CAM_MODE != NO_USE_CAM
+#if CAM_MODE != NO_CAM_TEST
+	// 카메라 설정
+
 	double fpsWanted = 120; // 카메라 영상 fps 
 	if (!cap.set(cv::CAP_PROP_FPS, fpsWanted)) // fps 설정
 		std::cout << fpsWanted << "fps is not supported" << std::endl; // 예외 메시지
@@ -265,7 +269,8 @@ int main()
 	cv::setTrackbarPos(saturation_trackbar_name, "detect", 160);
 	// trackbar의 기본값을 설정
 
-#if CAM_MODE == NO_USE_CAM
+#if CAM_MODE == NO_CAM_TEST
+	// 카메라 미사용 테스트
 
 	img = cv::imread("test_img/test3.png");
 
@@ -283,7 +288,8 @@ int main()
 	{
 		begin_t = clock(); // 시작 시간 기억
 
-#if CAM_MODE != NO_USE_CAM
+#if CAM_MODE != NO_CAM_TEST
+		// 카메라 사용시
 
 		cap.read(img); // 영상을 카메라에서 읽어옴
 		if (img.empty())
