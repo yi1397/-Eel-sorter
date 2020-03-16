@@ -1,11 +1,9 @@
-#define CAM_MODE CAM_320_240
+#define CAM_MODE NO_CAM_TEST
 
+#define NO_CAM_TEST 0
 #define CAM_320_240 320640
 #define CAM_640_480 640480
 
-#define brightness_trackbar_name "감지할밝기"
-#define saturation_trackbar_name "감지할채도"
-// trackbar의 이름
 
 
 #include <opencv2/opencv.hpp>
@@ -13,6 +11,10 @@
 #include <time.h> 
 #include <cmath>
 //#include "Histogram1D.h"
+
+#define brightness_trackbar_name "감지할밝기"
+#define saturation_trackbar_name "감지할채도"
+// trackbar의 이름
 
 float px_to_cm_ratio = 21; // 1cm가 몇 픽셀인지 저장하는 변수
 
@@ -175,6 +177,14 @@ void detect_eel(
 
 int main()
 {
+
+	//Histogram1D h; // Histogram을 이용한 장어 감지를 위한 클래스(아직 기능을 추가하지 않음)
+
+#if CAP_MODE == NO_CAM_TEST
+
+
+#else
+
 	cv::VideoCapture cap(1 + cv::CAP_DSHOW); //카메라를 불러옴
 
 	if (!cap.isOpened())
@@ -183,8 +193,6 @@ int main()
 		std::cerr << "카메라를 열 수 없음" << std::endl;
 		return -1;
 	}
-
-	//Histogram1D h; // Histogram을 이용한 장어 감지를 위한 클래스(아직 기능을 추가하지 않음)
 
 #if CAM_MODE == CAM_320_240
 	// 320*240
@@ -223,12 +231,18 @@ int main()
 #endif
 
 
+#endif
+
 	int brightness_to_detect; // 감지할 밝기 문턱값
 	int saturation_to_detect; // 감지할 채도 문턱값
 
+
+#if CAM_MODE != NO_CAM_TEST
 	double fpsWanted = 120; // 카메라 영상 fps 
 	if (!cap.set(cv::CAP_PROP_FPS, fpsWanted)) // fps 설정
 		std::cout << fpsWanted << "fps is not supported" << std::endl; // 예외 메시지
+
+#endif
 
 	cv::Mat img; // 카메라 영상이 기억될 변수
 
@@ -250,14 +264,18 @@ int main()
 	{
 		begin_t = clock(); // 시작 시간 기억
 
-		cap.read(img); // 영상을 카메라에서 읽어옴
-		//img = cv::imread("test_img/t.png");
+#if CAM_MODE ==NO_CAM_TEST
 
+		img = cv::imread("test_img/test2.png");
+
+#else
+
+		cap.read(img); // 영상을 카메라에서 읽어옴
 		if (img.empty())
 			// 영상 인식 실패(카메라 연결 끊김)
 		{
 			std::cerr << "카메라 연결 끊김" << std::endl;
-			break;
+			return -1;
 		}
 
 		{
@@ -266,6 +284,7 @@ int main()
 			img = temp;
 		}
 
+#endif
 
 		brightness_to_detect = cv::getTrackbarPos(brightness_trackbar_name, "detect");
 		saturation_to_detect = cv::getTrackbarPos(saturation_trackbar_name, "detect");
