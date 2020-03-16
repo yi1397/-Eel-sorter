@@ -181,6 +181,7 @@ int main()
 	//Histogram1D h; // Histogram을 이용한 장어 감지를 위한 클래스(아직 기능을 추가하지 않음)
 
 #if CAP_MODE == NO_CAM_TEST
+#pragma message("NO_CAM_TEST")
 	// 카메라 사용안함
 
 #else
@@ -196,6 +197,7 @@ int main()
 	}
 
 #if CAM_MODE == CAM_320_240
+#pragma message("CAM_320_240")
 	// 320*240
 
 	std::cout << "CAM_MODE is 320*240" << std::endl;
@@ -211,6 +213,7 @@ int main()
 	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 240); // 카메라 영상 세로 크기 설정
 
 #elif CAM_MODE == CAM_640_480
+#pragma message("CAM_640_480")
 	// 640*480
 
 	std::cout << "CAM_MODE is 640*480" << std::endl;
@@ -226,6 +229,7 @@ int main()
 	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480); // 카메라 영상 세로 크기 설정
 
 #else
+#pragma message("This CAM_MODE is not supported")
 	// 정의되지않은 카메라 모드
 	std::cerr << "This CAM_MODE is not supported" << std::endl;
 	return -1;
