@@ -16,7 +16,7 @@
 #define saturation_trackbar_name "감지할채도"
 // trackbar의 이름
 
-float px_to_cm_ratio = 21; // 1cm가 몇 픽셀인지 저장하는 변수
+float px_to_cm_ratio = 1; // 1cm가 몇 픽셀인지 저장하는 변수
 
 
 inline int calc_dist(cv::Point& A, cv::Point& B)
@@ -181,9 +181,10 @@ int main()
 	//Histogram1D h; // Histogram을 이용한 장어 감지를 위한 클래스(아직 기능을 추가하지 않음)
 
 #if CAP_MODE == NO_CAM_TEST
-
+	// 카메라 사용안함
 
 #else
+	//카메라 사용 
 
 	cv::VideoCapture cap(1 + cv::CAP_DSHOW); //카메라를 불러옴
 
@@ -225,6 +226,7 @@ int main()
 	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480); // 카메라 영상 세로 크기 설정
 
 #else
+	// 정의되지않은 카메라 모드
 	std::cerr << "This CAM_MODE is not supported" << std::endl;
 	return -1;
 
@@ -251,7 +253,7 @@ int main()
 	cv::namedWindow("detect", cv::WINDOW_NORMAL);
 	// 출력 윈도우
 
-	cv::createTrackbar(brightness_trackbar_name, "detect", 0, 255, on_trackbar);
+		cv::createTrackbar(brightness_trackbar_name, "detect", 0, 255, on_trackbar);
 	cv::createTrackbar(saturation_trackbar_name, "detect", 0, 255, on_trackbar);
 	// 윈도우에 trackbar를 만듬
 
@@ -266,7 +268,7 @@ int main()
 
 #if CAM_MODE ==NO_CAM_TEST
 
-		img = cv::imread("test_img/test2.png");
+		img = cv::imread("test_img/test3.png");
 
 #else
 
