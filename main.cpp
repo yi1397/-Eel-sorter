@@ -265,16 +265,18 @@ int main()
 	cv::setTrackbarPos(saturation_trackbar_name, "detect", 160);
 	// trackbar의 기본값을 설정
 
+#if CAM_MODE == NO_CAM_TEST
+
+	img = cv::imread("test_img/test3.png");
+
+#endif
+
 	while (1)
 		// 반복
 	{
 		begin_t = clock(); // 시작 시간 기억
 
-#if CAM_MODE ==NO_CAM_TEST
-
-		img = cv::imread("test_img/test3.png");
-
-#else
+#if CAM_MODE != NO_CAM_TEST
 
 		cap.read(img); // 영상을 카메라에서 읽어옴
 		if (img.empty())
