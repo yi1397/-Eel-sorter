@@ -1,9 +1,16 @@
+/*
+	장어 선별기에 사용될 소프트웨어 입니다.
+	움직이는 장어의 길이를 카메라 영상처리를 이용하여 순간적으로 측정하는 프로그램입니다.
+
+	사용 카메라 : oCam-5CRO-U-M
+*/
+
+
 #define CAM_MODE NO_CAM_TEST
 
 #define NO_CAM_TEST 0
 #define CAM_320_240 320640
 #define CAM_640_480 640480
-
 
 
 #include <opencv2/opencv.hpp>
@@ -269,7 +276,7 @@ int main()
 	cv::setTrackbarPos(saturation_trackbar_name, "detect", 160);
 	// trackbar의 기본값을 설정
 
-#if CAM_MODE == NO_CAM_TEST
+#if CAM_MODE == NO_CAM_TEST	
 	// 카메라 미사용 테스트
 
 	img = cv::imread("test_img/test3.png");
