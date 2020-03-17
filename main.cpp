@@ -363,7 +363,7 @@ int main()
 		}
 
 		end_t = clock(); // 실행 시간 기억
-		std::cout << "실행시간:" << (float)(end_t - begin_t) << std::endl;
+		std::cout << "실행시간:" << end_t - begin_t << std::endl;
 		// 실행시간 출력
 	}
 
