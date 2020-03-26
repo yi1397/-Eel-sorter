@@ -23,6 +23,17 @@
 #define saturation_trackbar_name "감지할채도"
 // trackbar의 이름
 
+typedef struct _eel_data {
+	bool success;
+	float length;
+
+	_eel_data(bool _success) : success(_success), length(0) {}
+
+	_eel_data(bool _success, float _length) : success(_success), length(_length) {}
+
+
+} eel_data;
+
 float px_to_cm_ratio = 1; // 1cm가 몇 픽셀인지 저장하는 변수
 
 
@@ -43,7 +54,7 @@ void on_trackbar(int, void*)
 }
 
 
-void detect_eel(
+eel_data detect_eel(
 	cv::Mat& input, // 입력된 이미지
 	int brightness, // 감지할 밝기 문턱값
 	int saturation // 감지할 채도 문턱값
@@ -51,6 +62,8 @@ void detect_eel(
 )
 // 장어의 길이를 감지하고 결과 이미지를 출력해주는 함수
 {
+	bool success = false;
+
 	float length = 0; // 장어의 길이가 기억될 변수
 
 	float detect_area = 0; // 장어의 면적이 기억될 변수
@@ -96,6 +109,8 @@ void detect_eel(
 
 	if (size) // contour가 없으면 실행하지 않음
 	{
+		success = true;
+
 		for (int i = 0; i < size; i++) // contours에서 가장 면적이 큰 contour를 찾는 for문
 		{
 			double area = cv::contourArea(contours[i]); // 현재 contour의 면적
@@ -179,6 +194,8 @@ void detect_eel(
 	cv::imshow("input", input);
 	cv::imshow("detect", detect);
 	// 이미지 출력
+
+	return eel_data(success, length);
 }
 
 
